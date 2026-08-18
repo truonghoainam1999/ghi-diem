@@ -1,0 +1,1474 @@
+<title>Ghi Điểm Design Spec</title>
+<style>
+  /* ================= DOC CHROME ================= */
+  :root {
+    --d-ground:  #EAEAE4;
+    --d-surface: #F7F7F4;
+    --d-ink:     #14191F;
+    --d-soft:    #58616B;
+    --d-mute:    #8A929B;
+    --d-rule:    #CFD0C9;
+    --d-rule-2:  #DEDFD8;
+    --d-accent:  #B5302B;
+
+    /* ---- app palette: NGÀY ---- */
+    --a-bg:      #F4F4F0;
+    --a-surface: #FFFFFF;
+    --a-raised:  #EBEBE6;
+    --a-ink:     #16202E;
+    --a-ink2:    #5A6672;
+    --a-ink3:    #8D97A2;
+    --a-line:    #E1E1DB;
+    --a-line2:   #C9C9C2;
+    --a-onink:   #FFFFFF;
+    --a-danger:  #B5302B;
+
+    /* ---- màu người chơi: NGÀY ---- */
+    --p1: #2F6FA8; --p2: #B5302B; --p3: #3B7D57; --p4: #B8721A;
+    --p5: #74499E; --p6: #1B838D; --p7: #B03E77; --p8: #55606D;
+
+    --f-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --f-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --f-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --d-ground:  #121517;
+      --d-surface: #1A1E21;
+      --d-ink:     #E8EAE9;
+      --d-soft:    #A0A8AF;
+      --d-mute:    #757D85;
+      --d-rule:    #2E3337;
+      --d-rule-2:  #23272A;
+      --d-accent:  #DD6A63;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --d-ground:  #121517;
+    --d-surface: #1A1E21;
+    --d-ink:     #E8EAE9;
+    --d-soft:    #A0A8AF;
+    --d-mute:    #757D85;
+    --d-rule:    #2E3337;
+    --d-rule-2:  #23272A;
+    --d-accent:  #DD6A63;
+  }
+
+  /* ---- app palette: ĐÊM (áp bằng class, không theo theme của trình duyệt) ---- */
+  .night {
+    --a-bg:      #12161C;
+    --a-surface: #1A1F26;
+    --a-raised:  #232931;
+    --a-ink:     #E9EBEE;
+    --a-ink2:    #98A2AE;
+    --a-ink3:    #6B7581;
+    --a-line:    #262D35;
+    --a-line2:   #38414B;
+    --a-onink:   #12161C;
+    --a-danger:  #E0736C;
+
+    --p1: #6FA8DA; --p2: #E4736C; --p3: #6FB58C; --p4: #DFA451;
+    --p5: #AE87D4; --p6: #4FB9C2; --p7: #DE7BAC; --p8: #98A2B0;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--d-ground);
+    color: var(--d-ink);
+    font-family: var(--f-ui);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet { max-width: 1180px; margin: 0 auto; padding: 76px 40px 100px; }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--d-accent);
+  }
+
+  h1 {
+    font-family: var(--f-display);
+    font-size: clamp(46px, 7.5vw, 82px);
+    line-height: 0.96;
+    font-weight: 400;
+    margin: 16px 0 0;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .lede { max-width: 60ch; font-size: 17.5px; color: var(--d-soft); margin: 18px 0 0; }
+
+  .thesis {
+    margin: 34px 0 0;
+    padding: 22px 26px;
+    border-left: 3px solid var(--d-accent);
+    background: var(--d-surface);
+    max-width: 62ch;
+    font-family: var(--f-display);
+    font-size: 21px;
+    line-height: 1.45;
+  }
+
+  .specs { display: flex; flex-wrap: wrap; gap: 8px 10px; margin-top: 26px; }
+
+  .spec {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--d-soft);
+    border: 1px solid var(--d-rule);
+    border-radius: 3px;
+    padding: 4px 9px;
+  }
+
+  section { border-top: 1px solid var(--d-rule); margin-top: 64px; padding-top: 44px; }
+
+  .sec-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+
+  .kicker {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--d-mute);
+  }
+
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1.12;
+    margin: 0;
+    letter-spacing: -0.015em;
+  }
+
+  .sec-head p { margin: 0; color: var(--d-soft); font-size: 15.5px; max-width: 62ch; }
+
+  h3 {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--d-mute);
+    margin: 0 0 14px;
+    font-weight: 500;
+  }
+
+  /* ---------- token displays ---------- */
+  .block { margin-bottom: 40px; }
+
+  .ramp { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 2px; }
+
+  .ramp .cell {
+    padding: 20px 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border: 1px solid var(--d-rule-2);
+  }
+
+  .cell .nm { font-size: 12.5px; font-weight: 600; }
+  .cell .hx { font-family: var(--f-mono); font-size: 10.5px; opacity: 0.72; }
+
+  .players { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 10px; }
+
+  .pchip {
+    border: 1px solid var(--d-rule-2);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--d-surface);
+  }
+
+  .pdot { width: 26px; height: 26px; border-radius: 50%; flex: 0 0 auto; }
+
+  .pchip .lb { display: flex; flex-direction: column; line-height: 1.25; }
+  .pchip .lb b { font-size: 12.5px; }
+  .pchip .lb span { font-family: var(--f-mono); font-size: 10px; color: var(--d-mute); }
+
+  .typescale { display: flex; flex-direction: column; gap: 0; }
+
+  .tsrow {
+    display: grid;
+    grid-template-columns: 116px 92px minmax(0, 1fr);
+    gap: 20px;
+    align-items: baseline;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--d-rule-2);
+  }
+
+  .tsrow .lab { font-family: var(--f-mono); font-size: 11px; color: var(--d-mute); letter-spacing: 0.06em; }
+  .tsrow .val { font-family: var(--f-mono); font-size: 11px; color: var(--d-soft); font-variant-numeric: tabular-nums; }
+  .tsrow .smp { color: var(--d-ink); }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 34px; }
+
+  .rules { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+
+  .rules li {
+    display: grid;
+    grid-template-columns: 14px minmax(0, 1fr);
+    gap: 12px;
+    font-size: 14.5px;
+    color: var(--d-soft);
+    line-height: 1.5;
+  }
+
+  .rules li::before { content: "—"; color: var(--d-mute); }
+  .rules strong { color: var(--d-ink); font-weight: 600; }
+
+  code {
+    font-family: var(--f-mono);
+    font-size: 0.88em;
+    background: var(--d-surface);
+    border: 1px solid var(--d-rule-2);
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+
+  pre {
+    font-family: var(--f-mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    background: var(--d-surface);
+    border: 1px solid var(--d-rule-2);
+    border-radius: 6px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 0;
+    color: var(--d-soft);
+  }
+
+  pre b { color: var(--d-ink); font-weight: 600; }
+
+  /* ---------- screen rows ---------- */
+  .screen {
+    display: grid;
+    grid-template-columns: 390px 390px minmax(0, 1fr);
+    gap: 34px;
+    align-items: start;
+    padding: 44px 0;
+    border-top: 1px solid var(--d-rule-2);
+  }
+
+  .screen:first-of-type { border-top: none; padding-top: 0; }
+
+  .screen .notes { grid-column: 1 / -1; }
+
+  @media (min-width: 1181px) {
+    .screen { grid-template-columns: 390px 390px minmax(0, 1fr); }
+    .screen .notes { grid-column: 3; }
+  }
+
+  .step {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--d-mute);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .screen h4 {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: 27px;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .screen .why { margin: 0 0 20px; color: var(--d-soft); font-size: 14.5px; }
+
+  .notes ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 13px; }
+
+  .notes ul li {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--d-soft);
+    padding-bottom: 13px;
+    border-bottom: 1px solid var(--d-rule-2);
+  }
+
+  .notes ul li:last-child { border: none; padding-bottom: 0; }
+  .notes ul li b { color: var(--d-ink); }
+
+  .caption {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--d-mute);
+    margin-bottom: 10px;
+  }
+
+  /* ================= PHONE ================= */
+  .phone {
+    width: 390px;
+    height: 844px;
+    border-radius: 42px;
+    border: 1px solid var(--d-rule);
+    background: var(--a-bg);
+    color: var(--a-ink);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--f-ui);
+    font-size: 15px;
+  }
+
+  .status {
+    height: 52px;
+    flex: 0 0 52px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 28px 7px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .status .sig { font-size: 11px; letter-spacing: 0.08em; color: var(--a-ink2); }
+
+  .nav {
+    flex: 0 0 auto;
+    padding: 4px 18px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .nav.ruled { border-bottom: 1px solid var(--a-line); }
+
+  .nav h1, .nav .ttl { font-family: var(--f-ui); font-size: 26px; font-weight: 700; letter-spacing: -0.025em; margin: 0; }
+  .nav .ttl-sm { font-size: 17px; font-weight: 650; letter-spacing: -0.01em; }
+  .nav .sub { font-size: 12px; color: var(--a-ink3); }
+  .nav .act { font-size: 15px; color: var(--a-ink2); }
+  .nav .act.on { color: var(--a-ink); font-weight: 600; }
+
+  .glyph {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: var(--a-raised);
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    color: var(--a-ink2);
+    flex: 0 0 auto;
+  }
+
+  .body {
+    flex: 1 1 auto;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow: hidden;
+  }
+
+  .lbl {
+    font-size: 11.5px;
+    font-weight: 650;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--a-ink3);
+  }
+
+  .card {
+    background: var(--a-surface);
+    border: 1px solid var(--a-line);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card.flush { padding: 2px 16px; gap: 0; }
+
+  .between { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .rowf { display: flex; align-items: center; gap: 10px; }
+  .stk { display: flex; flex-direction: column; gap: 2px; }
+
+  .num { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .t17 { font-size: 17px; font-weight: 650; letter-spacing: -0.01em; }
+  .t13 { font-size: 13px; color: var(--a-ink3); }
+  .t12 { font-size: 12px; color: var(--a-ink3); }
+
+  .av {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex: 0 0 auto;
+  }
+
+  .night .av { color: var(--a-bg); }
+  .av.s { width: 24px; height: 24px; font-size: 11px; }
+  .av.l { width: 56px; height: 56px; font-size: 23px; }
+
+  .btn {
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    background: var(--a-ink);
+    color: var(--a-onink);
+  }
+
+  .btn.ghost { background: transparent; color: var(--a-ink2); border: 1px solid var(--a-line2); }
+
+  .chip {
+    border: 1px solid var(--a-line2);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 14px;
+    color: var(--a-ink2);
+  }
+
+  .chip.on { background: var(--a-ink); color: var(--a-onink); border-color: var(--a-ink); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .seg { display: flex; background: var(--a-raised); border-radius: 11px; padding: 3px; gap: 3px; }
+
+  .seg > div {
+    flex: 1;
+    text-align: center;
+    padding: 9px 4px;
+    font-size: 13.5px;
+    color: var(--a-ink2);
+    border-radius: 8px;
+  }
+
+  .seg > div.on { background: var(--a-surface); color: var(--a-ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .night .seg > div.on { box-shadow: none; border: 1px solid var(--a-line2); padding: 8px 3px; }
+
+  .lrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--a-line);
+  }
+
+  .lrow:last-child { border-bottom: none; }
+
+  .dashed {
+    border: 1px dashed var(--a-line2);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--a-ink3);
+  }
+
+  .foot {
+    flex: 0 0 auto;
+    padding: 12px 18px 32px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: var(--a-bg);
+    border-top: 1px solid var(--a-line);
+  }
+
+  .foot .btn { flex: 1; }
+
+  /* --- scoreboard --- */
+  .totals {
+    display: grid;
+    grid-template-columns: 34px repeat(5, 1fr);
+    background: var(--a-surface);
+    border-bottom: 1px solid var(--a-line2);
+  }
+
+  .tot {
+    padding: 11px 2px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    position: relative;
+  }
+
+  .tot .nm { font-size: 11px; color: var(--a-ink2); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tot .big { font-size: 23px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+  .tot .dl { font-size: 10.5px; font-variant-numeric: tabular-nums; color: var(--a-ink3); }
+  .tot .dl.neg { color: var(--a-danger); }
+  .tot .crown { position: absolute; top: 3px; right: 5px; font-size: 13px; line-height: 1; }
+  .tot.lead .nm { color: var(--a-ink); font-weight: 650; }
+  .tot .bar { position: absolute; left: 12%; right: 12%; bottom: 0; height: 3px; border-radius: 2px 2px 0 0; }
+
+  .ghead, .grow {
+    display: grid;
+    grid-template-columns: 34px repeat(5, 1fr);
+    align-items: center;
+    text-align: center;
+  }
+
+  .ghead {
+    padding: 8px 0;
+    font-size: 10px;
+    font-weight: 650;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--a-ink3);
+    background: var(--a-bg);
+    border-bottom: 1px solid var(--a-line);
+  }
+
+  .grow {
+    padding: 13px 0;
+    border-bottom: 1px solid var(--a-line);
+    font-size: 15.5px;
+    font-variant-numeric: tabular-nums;
+    background: var(--a-surface);
+  }
+
+  .grow .rd { font-size: 11px; color: var(--a-ink3); font-weight: 600; }
+  .grow .z { color: var(--a-ink3); }
+  .grow .ng { color: var(--a-danger); }
+  .grow.new { background: var(--a-raised); }
+
+  .scrollarea { flex: 1 1 auto; overflow: hidden; background: var(--a-surface); }
+
+  /* --- sheet --- */
+  .scrim { flex: 1 1 auto; overflow: hidden; display: flex; flex-direction: column; opacity: 0.32; }
+
+  .panel {
+    flex: 0 0 auto;
+    background: var(--a-bg);
+    border-radius: 22px 22px 0 0;
+    border-top: 1px solid var(--a-line2);
+    padding: 9px 18px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    margin-top: -22px;
+  }
+
+  .handle { width: 38px; height: 5px; border-radius: 3px; background: var(--a-line2); margin: 0 auto 2px; }
+
+  .prow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--a-surface);
+    border: 1px solid var(--a-line);
+    border-radius: 14px;
+    padding: 8px 10px 8px 12px;
+  }
+
+  .stepper { display: flex; align-items: center; gap: 6px; }
+
+  .sbtn {
+    width: 44px; height: 44px;
+    border-radius: 11px;
+    background: var(--a-raised);
+    display: grid;
+    place-items: center;
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--a-ink2);
+  }
+
+  .sval {
+    min-width: 64px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .sval.ng { color: var(--a-danger); }
+  .sval.zero { color: var(--a-ink3); font-weight: 500; }
+
+  .keycap {
+    background: var(--a-raised);
+    border-radius: 12px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    text-align: center;
+  }
+
+  .keycap div {
+    background: var(--a-surface);
+    border-radius: 8px;
+    padding: 11px 0;
+    font-size: 19px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* --- result --- */
+  .podium {
+    background: var(--a-surface);
+    border: 1px solid var(--a-line);
+    border-radius: 20px;
+    padding: 24px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .podium .topbar { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+  .podium .tag { font-size: 11.5px; font-weight: 650; letter-spacing: 0.1em; text-transform: uppercase; color: var(--a-ink3); }
+  .podium .who { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+  .podium .big { font-size: 46px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.035em; line-height: 1.05; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+
+  .stat {
+    background: var(--a-surface);
+    border: 1px solid var(--a-line);
+    border-radius: 13px;
+    padding: 12px 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .stat b { font-size: 18px; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .stat span { font-size: 10.5px; color: var(--a-ink3); }
+
+  .rank { width: 15px; font-size: 12px; font-weight: 650; color: var(--a-ink3); font-variant-numeric: tabular-nums; }
+
+  /* --- capacity figure --- */
+  .cap { display: flex; flex-direction: column; gap: 12px; }
+
+  .caprow { display: grid; grid-template-columns: 72px minmax(0,1fr) 128px; gap: 14px; align-items: center; }
+
+  .caplab { font-family: var(--f-mono); font-size: 11px; color: var(--d-soft); }
+
+  .capbar { display: flex; gap: 2px; height: 34px; }
+
+  .capbar i {
+    flex: 1;
+    border-radius: 3px;
+    display: grid;
+    place-items: center;
+    font-family: var(--f-mono);
+    font-size: 9px;
+    color: var(--d-surface);
+    font-style: normal;
+  }
+
+  .capnote { font-family: var(--f-mono); font-size: 10.5px; color: var(--d-mute); }
+  .capnote.warn { color: var(--d-accent); }
+
+  /* --- closing --- */
+  .next { display: flex; flex-direction: column; gap: 16px; max-width: 70ch; }
+
+  .next .item { display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 14px; align-items: baseline; }
+  .next .n { font-family: var(--f-mono); font-size: 12.5px; color: var(--d-accent); }
+  .next p { margin: 3px 0 0; color: var(--d-soft); font-size: 14.5px; }
+
+  @media (max-width: 1180px) {
+    .sheet { padding: 52px 22px 76px; }
+    .screen { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .phone { max-width: 100%; }
+    .tsrow { grid-template-columns: 96px 76px minmax(0,1fr); gap: 12px; }
+    .caprow { grid-template-columns: 62px minmax(0,1fr); }
+    .capnote { grid-column: 1 / -1; }
+  }
+</style>
+
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Mockup · v1 · bản màu</div>
+    <h1>Ghi Điểm</h1>
+    <p class="lede">Ghi điểm cho ván bài và boardgame chơi tại bàn. Bản này chốt màu, chữ, khoảng cách và trạng thái — đủ để dựng thẳng thành React Native.</p>
+
+    <p class="thesis">Trong app này, màu chỉ thuộc về người chơi. Mọi thứ khác — nút, thẻ, nền, đường kẻ — là mực và giấy. Nhờ vậy khi có 5, 6 hay 8 người trên cùng một bảng, mắt vẫn tách được ai là ai mà giao diện không loạn.</p>
+
+    <div class="specs">
+      <span class="spec">React Native · Expo</span>
+      <span class="spec">StyleSheet thuần</span>
+      <span class="spec">390 × 844 pt</span>
+      <span class="spec">Ngày + Đêm</span>
+      <span class="spec">Lưu trong máy</span>
+      <span class="spec">2–8 người, không scroll ngang</span>
+    </div>
+  </header>
+
+  <!-- ============ MÀU ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">01 — Nền tảng</div>
+      <h2>Màu</h2>
+      <p>Nền là hệ trung tính ngả xanh mực, không phải xám thuần — cùng tông với con số nên bảng điểm đọc như một tờ sổ, không như một cái bảng tính.</p>
+    </div>
+
+    <div class="block">
+      <h3>Giao diện ngày</h3>
+      <div class="ramp">
+        <div class="cell" style="background:#F4F4F0;color:#16202E"><span class="nm">bg</span><span class="hx">#F4F4F0</span></div>
+        <div class="cell" style="background:#FFFFFF;color:#16202E"><span class="nm">surface</span><span class="hx">#FFFFFF</span></div>
+        <div class="cell" style="background:#EBEBE6;color:#16202E"><span class="nm">raised</span><span class="hx">#EBEBE6</span></div>
+        <div class="cell" style="background:#E1E1DB;color:#16202E"><span class="nm">line</span><span class="hx">#E1E1DB</span></div>
+        <div class="cell" style="background:#8D97A2;color:#fff"><span class="nm">ink3</span><span class="hx">#8D97A2</span></div>
+        <div class="cell" style="background:#5A6672;color:#fff"><span class="nm">ink2</span><span class="hx">#5A6672</span></div>
+        <div class="cell" style="background:#16202E;color:#fff"><span class="nm">ink</span><span class="hx">#16202E</span></div>
+        <div class="cell" style="background:#B5302B;color:#fff"><span class="nm">danger</span><span class="hx">#B5302B</span></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Giao diện đêm</h3>
+      <div class="ramp">
+        <div class="cell" style="background:#12161C;color:#E9EBEE"><span class="nm">bg</span><span class="hx">#12161C</span></div>
+        <div class="cell" style="background:#1A1F26;color:#E9EBEE"><span class="nm">surface</span><span class="hx">#1A1F26</span></div>
+        <div class="cell" style="background:#232931;color:#E9EBEE"><span class="nm">raised</span><span class="hx">#232931</span></div>
+        <div class="cell" style="background:#38414B;color:#E9EBEE"><span class="nm">line2</span><span class="hx">#38414B</span></div>
+        <div class="cell" style="background:#6B7581;color:#12161C"><span class="nm">ink3</span><span class="hx">#6B7581</span></div>
+        <div class="cell" style="background:#98A2AE;color:#12161C"><span class="nm">ink2</span><span class="hx">#98A2AE</span></div>
+        <div class="cell" style="background:#E9EBEE;color:#12161C"><span class="nm">ink</span><span class="hx">#E9EBEE</span></div>
+        <div class="cell" style="background:#E0736C;color:#12161C"><span class="nm">danger</span><span class="hx">#E0736C</span></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Màu người chơi — 8 màu, gán theo thứ tự vào ván</h3>
+      <div class="players">
+        <div class="pchip"><i class="pdot" style="background:#2F6FA8"></i><span class="lb"><b>Mực</b><span>#2F6FA8 · #6FA8DA</span></span></div>
+        <div class="pchip"><i class="pdot" style="background:#B5302B"></i><span class="lb"><b>Điều</b><span>#B5302B · #E4736C</span></span></div>
+        <div class="pchip"><i class="pdot" style="background:#3B7D57"></i><span class="lb"><b>Lá</b><span>#3B7D57 · #6FB58C</span></span></div>
+        <div class="pchip"><i class="pdot" style="background:#B8721A"></i><span class="lb"><b>Nghệ</b><span>#B8721A · #DFA451</span></span></div>
+        <div class="pchip"><i class="pdot" style="background:#74499E"></i><span class="lb"><b>Sim</b><span>#74499E · #AE87D4</span></span></div>
+        <div class="pchip"><i class="pdot" style="background:#1B838D"></i><span class="lb"><b>Vịt</b><span>#1B838D · #4FB9C2</span></span></div>
+        <div class="pchip"><i class="pdot" style="background:#B03E77"></i><span class="lb"><b>Sen</b><span>#B03E77 · #DE7BAC</span></span></div>
+        <div class="pchip"><i class="pdot" style="background:#55606D"></i><span class="lb"><b>Chì</b><span>#55606D · #98A2B0</span></span></div>
+      </div>
+      <ul class="rules" style="margin-top:18px">
+        <li>Người thứ 9 trở đi quay vòng lại màu 1, kèm chữ cái đầu tên trong avatar để phân biệt. <strong>Chữ cái mới là thứ định danh chính</strong>, màu chỉ hỗ trợ.</li>
+        <li>Tám màu này phân biệt được cả với mắt <strong>mù màu đỏ–lục</strong> vì chúng khác nhau cả về độ sáng, không chỉ sắc độ.</li>
+        <li>Màu người chơi <strong>không bao giờ tô nền lớn</strong> — chỉ dùng cho avatar, gạch chân cột, và viền. Nền lớn sẽ làm con số khó đọc.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ CHỮ ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">02 — Nền tảng</div>
+      <h2>Chữ và khoảng cách</h2>
+      <p>Dùng font hệ thống (SF Pro trên iOS, Roboto trên Android). Không nhúng font riêng — app này sống hay chết ở chỗ con số dễ đọc, không ở chỗ font có cá tính.</p>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <h3>Thang chữ</h3>
+        <div class="typescale">
+          <div class="tsrow"><span class="lab">score.hero</span><span class="val">46 / 700</span><span class="smp num" style="font-size:32px;font-weight:700;letter-spacing:-.03em">42</span></div>
+          <div class="tsrow"><span class="lab">score.total</span><span class="val">23 / 700</span><span class="smp num" style="font-size:23px;font-weight:700;letter-spacing:-.03em">42</span></div>
+          <div class="tsrow"><span class="lab">title</span><span class="val">26 / 700</span><span class="smp" style="font-size:24px;font-weight:700;letter-spacing:-.025em">Ghi Điểm</span></div>
+          <div class="tsrow"><span class="lab">title.nav</span><span class="val">17 / 650</span><span class="smp" style="font-size:17px;font-weight:650">Tiến lên</span></div>
+          <div class="tsrow"><span class="lab">body</span><span class="val">15 / 400</span><span class="smp" style="font-size:15px">Nam đang dẫn 5 điểm</span></div>
+          <div class="tsrow"><span class="lab">cell</span><span class="val">15.5 / 400</span><span class="smp num" style="font-size:15.5px">−3</span></div>
+          <div class="tsrow"><span class="lab">caption</span><span class="val">13 / 400</span><span class="smp" style="font-size:13px;color:var(--d-mute)">4 người · vòng 7</span></div>
+          <div class="tsrow"><span class="lab">label</span><span class="val">11.5 / 650</span><span class="smp" style="font-size:11.5px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;color:var(--d-mute)">Đang chơi</span></div>
+        </div>
+      </div>
+
+      <div>
+        <h3>Quy tắc số</h3>
+        <ul class="rules">
+          <li>Mọi con số bật <code>fontVariant: ['tabular-nums']</code>. Không có nó thì cột điểm nhảy lung tung khi số thay đổi.</li>
+          <li>Dấu trừ dùng ký tự <strong>−</strong> (U+2212), không dùng gạch nối. Rộng bằng chữ số nên cột vẫn thẳng.</li>
+          <li>Điểm 0 tô màu <code>ink3</code> mờ đi — mắt bỏ qua được ngay, chỉ tập trung vào vòng có ăn thua.</li>
+          <li>Điểm âm tô màu <code>danger</code>. Đây là chỗ duy nhất màu đỏ mang nghĩa, nên không dùng đỏ cho việc gì khác.</li>
+        </ul>
+
+        <h3 style="margin-top:30px">Khoảng cách &amp; bo góc</h3>
+        <ul class="rules">
+          <li>Thang cách: <strong>4 · 8 · 12 · 16 · 24 · 32</strong>. Lề màn hình luôn 18.</li>
+          <li>Bo góc: thẻ <strong>16</strong>, nút <strong>14</strong>, ô nhỏ <strong>11</strong>, bottom sheet <strong>22</strong>, avatar tròn.</li>
+          <li>Vùng chạm tối thiểu <strong>44×44</strong>. Nút −/+ ở màn nhập điểm đúng bằng 44, không co nhỏ hơn.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SỨC CHỨA ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">03 — Ràng buộc chính</div>
+      <h2>Bảng điểm chứa được bao nhiêu người</h2>
+      <p>Bạn yêu cầu 5 người phải đẹp và không scroll ngang. Trừ 34pt cho cột “Vòng”, còn 356pt chia đều. Đặt sàn 44pt mỗi cột thì tới 8 người vẫn vừa màn hình.</p>
+    </div>
+
+    <div class="cap">
+      <div class="caprow">
+        <span class="caplab">2 người</span>
+        <div class="capbar">
+          <i style="background:var(--p1);flex:0 0 34px;color:#fff">V</i>
+          <i style="background:var(--p1)">178</i><i style="background:var(--p2)">178</i>
+        </div>
+        <span class="capnote">rộng rãi</span>
+      </div>
+      <div class="caprow">
+        <span class="caplab">5 người</span>
+        <div class="capbar">
+          <i style="background:var(--p1);flex:0 0 34px;color:#fff">V</i>
+          <i style="background:var(--p1)">71</i><i style="background:var(--p2)">71</i><i style="background:var(--p3)">71</i><i style="background:var(--p4)">71</i><i style="background:var(--p5)">71</i>
+        </div>
+        <span class="capnote">mốc thiết kế</span>
+      </div>
+      <div class="caprow">
+        <span class="caplab">8 người</span>
+        <div class="capbar">
+          <i style="background:var(--p1);flex:0 0 34px;color:#fff">V</i>
+          <i style="background:var(--p1)">44</i><i style="background:var(--p2)">44</i><i style="background:var(--p3)">44</i><i style="background:var(--p4)">44</i><i style="background:var(--p5)">44</i><i style="background:var(--p6)">44</i><i style="background:var(--p7)">44</i><i style="background:var(--p8)">44</i>
+        </div>
+        <span class="capnote">sàn 44pt · chữ co còn 17</span>
+      </div>
+      <div class="caprow">
+        <span class="caplab">9 người +</span>
+        <div class="capbar">
+          <i style="background:var(--p1);flex:0 0 34px;color:#fff">V</i>
+          <i style="background:var(--p1)">44</i><i style="background:var(--p2)">44</i><i style="background:var(--p3)">44</i><i style="background:var(--p4)">44</i><i style="background:var(--p5)">44</i><i style="background:var(--p6)">44</i><i style="background:var(--p7)">44</i><i style="background:var(--p8)">44</i>
+          <i style="background:var(--d-rule);color:var(--d-mute)">→</i>
+        </div>
+        <span class="capnote warn">cuộn ngang, cột Vòng ghim lại</span>
+      </div>
+    </div>
+
+    <ul class="rules" style="margin-top:24px">
+      <li>Cỡ chữ tổng điểm co theo số người: <strong>2–5 người → 23pt</strong>, 6–7 → 20pt, 8 → 17pt. Điểm ba chữ số vẫn vừa.</li>
+      <li>Tên người chơi ở hàng tổng cắt bằng <code>...</code> khi hẹp. Avatar và màu vẫn giữ nguyên nên không nhầm được ai.</li>
+      <li>Cột người đang dẫn có <strong>gạch màu dày 3pt ở đáy</strong> và vương miện góc trên — nhận ra bằng hai dấu hiệu, không chỉ bằng màu.</li>
+    </ul>
+  </section>
+
+  <!-- ============ MÀN HÌNH ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">04 — Màn hình</div>
+      <h2>Năm màn hình, hai giao diện</h2>
+      <p>Bên trái là giao diện ngày, bên phải là đêm. Chơi bài buổi tối trong phòng tối là tình huống thật, nên giao diện đêm không phải phần phụ.</p>
+    </div>
+
+    <!-- ---- 03 bảng điểm: đặt lên đầu vì là màn quan trọng nhất ---- -->
+    <div class="screen">
+      <!-- NGÀY -->
+      <div>
+        <div class="caption">Ngày</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="sig">▮▮▮ ⌁</span></div>
+          <div class="nav">
+            <div class="glyph">‹</div>
+            <div class="stk" style="align-items:center">
+              <div class="ttl ttl-sm">Tiến lên</div>
+              <div class="sub">vòng 7 · 5 người</div>
+            </div>
+            <div class="glyph">⋯</div>
+          </div>
+          <div class="totals">
+            <div></div>
+            <div class="tot lead"><span class="crown">♛</span><span class="av s" style="background:var(--p1)">N</span><span class="nm">Nam</span><span class="big">42</span><span class="dl">+8</span><span class="bar" style="background:var(--p1)"></span></div>
+            <div class="tot"><span class="av s" style="background:var(--p2)">H</span><span class="nm">Hà</span><span class="big">37</span><span class="dl">+12</span></div>
+            <div class="tot"><span class="av s" style="background:var(--p3)">L</span><span class="nm">Linh</span><span class="big">31</span><span class="dl neg">−3</span></div>
+            <div class="tot"><span class="av s" style="background:var(--p4)">T</span><span class="nm">Tuấn</span><span class="big">28</span><span class="dl">+5</span></div>
+            <div class="tot"><span class="av s" style="background:var(--p5)">M</span><span class="nm">Mai</span><span class="big">25</span><span class="dl">+6</span></div>
+          </div>
+          <div class="ghead"><span>V</span><span>Nam</span><span>Hà</span><span>Linh</span><span>Tuấn</span><span>Mai</span></div>
+          <div class="scrollarea">
+            <div class="grow new"><span class="rd">7</span><span>8</span><span>12</span><span class="ng">−3</span><span>5</span><span>6</span></div>
+            <div class="grow"><span class="rd">6</span><span>5</span><span>4</span><span>9</span><span>2</span><span>3</span></div>
+            <div class="grow"><span class="rd">5</span><span>11</span><span class="z">0</span><span>6</span><span>7</span><span>4</span></div>
+            <div class="grow"><span class="rd">4</span><span>3</span><span>8</span><span>4</span><span>6</span><span>2</span></div>
+            <div class="grow"><span class="rd">3</span><span>7</span><span>5</span><span>2</span><span>3</span><span>5</span></div>
+            <div class="grow"><span class="rd">2</span><span>4</span><span>6</span><span>9</span><span>1</span><span>3</span></div>
+            <div class="grow"><span class="rd">1</span><span>4</span><span>2</span><span>4</span><span>4</span><span>2</span></div>
+          </div>
+          <div class="foot">
+            <div class="glyph" style="width:52px;height:52px;border-radius:14px;font-size:18px">↩</div>
+            <div class="btn">Nhập điểm vòng 8</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ĐÊM -->
+      <div class="night">
+        <div class="caption">Đêm</div>
+        <div class="phone">
+          <div class="status"><span>23:14</span><span class="sig">▮▮▮ ⌁</span></div>
+          <div class="nav">
+            <div class="glyph">‹</div>
+            <div class="stk" style="align-items:center">
+              <div class="ttl ttl-sm">Tiến lên</div>
+              <div class="sub">vòng 7 · 5 người</div>
+            </div>
+            <div class="glyph">⋯</div>
+          </div>
+          <div class="totals">
+            <div></div>
+            <div class="tot lead"><span class="crown">♛</span><span class="av s" style="background:var(--p1)">N</span><span class="nm">Nam</span><span class="big">42</span><span class="dl">+8</span><span class="bar" style="background:var(--p1)"></span></div>
+            <div class="tot"><span class="av s" style="background:var(--p2)">H</span><span class="nm">Hà</span><span class="big">37</span><span class="dl">+12</span></div>
+            <div class="tot"><span class="av s" style="background:var(--p3)">L</span><span class="nm">Linh</span><span class="big">31</span><span class="dl neg">−3</span></div>
+            <div class="tot"><span class="av s" style="background:var(--p4)">T</span><span class="nm">Tuấn</span><span class="big">28</span><span class="dl">+5</span></div>
+            <div class="tot"><span class="av s" style="background:var(--p5)">M</span><span class="nm">Mai</span><span class="big">25</span><span class="dl">+6</span></div>
+          </div>
+          <div class="ghead"><span>V</span><span>Nam</span><span>Hà</span><span>Linh</span><span>Tuấn</span><span>Mai</span></div>
+          <div class="scrollarea">
+            <div class="grow new"><span class="rd">7</span><span>8</span><span>12</span><span class="ng">−3</span><span>5</span><span>6</span></div>
+            <div class="grow"><span class="rd">6</span><span>5</span><span>4</span><span>9</span><span>2</span><span>3</span></div>
+            <div class="grow"><span class="rd">5</span><span>11</span><span class="z">0</span><span>6</span><span>7</span><span>4</span></div>
+            <div class="grow"><span class="rd">4</span><span>3</span><span>8</span><span>4</span><span>6</span><span>2</span></div>
+            <div class="grow"><span class="rd">3</span><span>7</span><span>5</span><span>2</span><span>3</span><span>5</span></div>
+            <div class="grow"><span class="rd">2</span><span>4</span><span>6</span><span>9</span><span>1</span><span>3</span></div>
+            <div class="grow"><span class="rd">1</span><span>4</span><span>2</span><span>4</span><span>4</span><span>2</span></div>
+          </div>
+          <div class="foot">
+            <div class="glyph" style="width:52px;height:52px;border-radius:14px;font-size:18px">↩</div>
+            <div class="btn">Nhập điểm vòng 8</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes">
+        <div class="step">Màn 03 · trung tâm</div>
+        <h4>Bảng điểm</h4>
+        <p class="why">Màn nhìn nhiều nhất. Điện thoại nằm giữa bàn, người nhìn từ xa và nghiêng, tay đang cầm bài.</p>
+        <ul>
+          <li><b>Tổng điểm ghim trên đầu, cỡ 23pt đậm.</b> Đây là chữ to nhất màn hình. Liếc một cái là đủ.</li>
+          <li><b>Vòng mới nhất nằm trên cùng và có nền nhạt hơn.</b> Vừa nhập xong thì thấy ngay kết quả, không phải cuộn tìm.</li>
+          <li><b>Cột người dẫn đầu đánh dấu hai lớp:</b> vương miện góc trên và gạch màu ở đáy ô. Không phụ thuộc riêng vào màu.</li>
+          <li><b>Điểm 0 mờ, điểm âm đỏ.</b> Nhìn lướt qua cả bảng là thấy ngay vòng nào có biến động.</li>
+          <li><b>Nút hoàn tác ↩ đứng cạnh nút nhập điểm</b>, kích thước 52pt. Nhập nhầm là chuyện thường xuyên nhất trong app này.</li>
+          <li><b>Chạm vào một ô</b> để sửa riêng vòng đó. <b>Chạm vào cột</b> để xem diễn biến điểm của một người.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ---- 01 danh sách ---- -->
+    <div class="screen">
+      <div>
+        <div class="caption">Ngày</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="sig">▮▮▮ ⌁</span></div>
+          <div class="nav">
+            <div class="ttl">Ghi Điểm</div>
+            <div class="glyph">⚙</div>
+          </div>
+          <div class="body">
+            <div class="lbl">Đang chơi</div>
+            <div class="card">
+              <div class="between">
+                <div class="stk">
+                  <span class="t17">Tiến lên</span>
+                  <span class="t13">5 người · vòng 7 · 22 phút trước</span>
+                </div>
+                <span class="glyph">›</span>
+              </div>
+              <div class="rowf" style="gap:6px">
+                <span class="av s" style="background:var(--p1)">N</span>
+                <span class="av s" style="background:var(--p2);margin-left:-10px">H</span>
+                <span class="av s" style="background:var(--p3);margin-left:-10px">L</span>
+                <span class="av s" style="background:var(--p4);margin-left:-10px">T</span>
+                <span class="av s" style="background:var(--p5);margin-left:-10px">M</span>
+                <span class="t13" style="margin-left:6px">Nam dẫn</span>
+                <span class="t17 num" style="margin-left:auto">42</span>
+              </div>
+            </div>
+
+            <div class="lbl" style="margin-top:6px">Đã xong</div>
+            <div class="card flush">
+              <div class="lrow">
+                <div class="stk"><span style="font-weight:600">Phỏm</span><span class="t12">14/08 · 5 người</span></div>
+                <div class="rowf"><span class="av s" style="background:var(--p2)">H</span><span class="t13">Hà thắng</span></div>
+              </div>
+              <div class="lrow">
+                <div class="stk"><span style="font-weight:600">Uno</span><span class="t12">12/08 · 4 người</span></div>
+                <div class="rowf"><span class="av s" style="background:var(--p3)">L</span><span class="t13">Linh thắng</span></div>
+              </div>
+              <div class="lrow">
+                <div class="stk"><span style="font-weight:600">Tiến lên</span><span class="t12">09/08 · 6 người</span></div>
+                <div class="rowf"><span class="av s" style="background:var(--p1)">N</span><span class="t13">Nam thắng</span></div>
+              </div>
+              <div class="lrow">
+                <div class="stk"><span style="font-weight:600">Tá lả</span><span class="t12">07/08 · 4 người</span></div>
+                <div class="rowf"><span class="av s" style="background:var(--p4)">T</span><span class="t13">Tuấn thắng</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="foot"><div class="btn">＋ Ván mới</div></div>
+        </div>
+      </div>
+
+      <div class="night">
+        <div class="caption">Đêm</div>
+        <div class="phone">
+          <div class="status"><span>23:14</span><span class="sig">▮▮▮ ⌁</span></div>
+          <div class="nav">
+            <div class="ttl">Ghi Điểm</div>
+            <div class="glyph">⚙</div>
+          </div>
+          <div class="body">
+            <div class="lbl">Đang chơi</div>
+            <div class="card">
+              <div class="between">
+                <div class="stk">
+                  <span class="t17">Tiến lên</span>
+                  <span class="t13">5 người · vòng 7 · 22 phút trước</span>
+                </div>
+                <span class="glyph">›</span>
+              </div>
+              <div class="rowf" style="gap:6px">
+                <span class="av s" style="background:var(--p1)">N</span>
+                <span class="av s" style="background:var(--p2);margin-left:-10px">H</span>
+                <span class="av s" style="background:var(--p3);margin-left:-10px">L</span>
+                <span class="av s" style="background:var(--p4);margin-left:-10px">T</span>
+                <span class="av s" style="background:var(--p5);margin-left:-10px">M</span>
+                <span class="t13" style="margin-left:6px">Nam dẫn</span>
+                <span class="t17 num" style="margin-left:auto">42</span>
+              </div>
+            </div>
+
+            <div class="lbl" style="margin-top:6px">Đã xong</div>
+            <div class="card flush">
+              <div class="lrow">
+                <div class="stk"><span style="font-weight:600">Phỏm</span><span class="t12">14/08 · 5 người</span></div>
+                <div class="rowf"><span class="av s" style="background:var(--p2)">H</span><span class="t13">Hà thắng</span></div>
+              </div>
+              <div class="lrow">
+                <div class="stk"><span style="font-weight:600">Uno</span><span class="t12">12/08 · 4 người</span></div>
+                <div class="rowf"><span class="av s" style="background:var(--p3)">L</span><span class="t13">Linh thắng</span></div>
+              </div>
+              <div class="lrow">
+                <div class="stk"><span style="font-weight:600">Tiến lên</span><span class="t12">09/08 · 6 người</span></div>
+                <div class="rowf"><span class="av s" style="background:var(--p1)">N</span><span class="t13">Nam thắng</span></div>
+              </div>
+              <div class="lrow">
+                <div class="stk"><span style="font-weight:600">Tá lả</span><span class="t12">07/08 · 4 người</span></div>
+                <div class="rowf"><span class="av s" style="background:var(--p4)">T</span><span class="t13">Tuấn thắng</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="foot"><div class="btn">＋ Ván mới</div></div>
+        </div>
+      </div>
+
+      <div class="notes">
+        <div class="step">Màn 01</div>
+        <h4>Danh sách ván</h4>
+        <p class="why">Mở app ra để làm hai việc: quay lại ván đang dở, hoặc mở ván mới. Hai việc đó chiếm hai vị trí dễ chạm nhất.</p>
+        <ul>
+          <li><b>Chồng avatar</b> cho biết ai đang trong ván mà không tốn dòng chữ nào. Màu người chơi lần đầu xuất hiện ở đây và giữ nguyên suốt ván.</li>
+          <li><b>“＋ Ván mới” ở thanh dưới</b>, không dùng nút tròn nổi. Ngón cái với dễ hơn và nút có chữ thì rõ nghĩa.</li>
+          <li><b>Ván đã xong nén một dòng.</b> Tên, ngày, người thắng — không ai cần điểm chi tiết từ màn này.</li>
+          <li><b>Chưa có ván nào:</b> thay cả vùng nội dung bằng một dòng hướng dẫn và nút “Bắt đầu ván đầu tiên”.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ---- 02 ván mới ---- -->
+    <div class="screen">
+      <div>
+        <div class="caption">Ngày</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="sig">▮▮▮ ⌁</span></div>
+          <div class="nav ruled">
+            <span class="act">Huỷ</span>
+            <span class="ttl ttl-sm">Ván mới</span>
+            <span class="act" style="opacity:0">Huỷ</span>
+          </div>
+          <div class="body">
+            <div class="lbl">Loại game</div>
+            <div class="chips">
+              <span class="chip on">Tiến lên</span>
+              <span class="chip">Phỏm</span>
+              <span class="chip">Tá lả</span>
+              <span class="chip">Uno</span>
+              <span class="chip">Khác…</span>
+            </div>
+
+            <div class="lbl" style="margin-top:6px">Người chơi · 5</div>
+            <div class="card flush">
+              <div class="lrow"><div class="rowf"><span class="av s" style="background:var(--p1)">N</span><span>Nam</span></div><span class="t13">✕</span></div>
+              <div class="lrow"><div class="rowf"><span class="av s" style="background:var(--p2)">H</span><span>Hà</span></div><span class="t13">✕</span></div>
+              <div class="lrow"><div class="rowf"><span class="av s" style="background:var(--p3)">L</span><span>Linh</span></div><span class="t13">✕</span></div>
+              <div class="lrow"><div class="rowf"><span class="av s" style="background:var(--p4)">T</span><span>Tuấn</span></div><span class="t13">✕</span></div>
+              <div class="lrow"><div class="rowf"><span class="av s" style="background:var(--p5)">M</span><span>Mai</span></div><span class="t13">✕</span></div>
+            </div>
+            <div class="dashed">＋ Thêm người chơi</div>
+
+            <div class="lbl" style="margin-top:6px">Ai thắng</div>
+            <div class="seg"><div class="on">Điểm cao</div><div>Điểm thấp</div></div>
+
+            <div class="lbl" style="margin-top:6px">Kết thúc khi</div>
+            <div class="seg"><div>Đủ vòng</div><div>Đạt điểm</div><div class="on">Tự bấm</div></div>
+          </div>
+          <div class="foot"><div class="btn">Bắt đầu chơi</div></div>
+        </div>
+      </div>
+
+      <div class="night">
+        <div class="caption">Đêm</div>
+        <div class="phone">
+          <div class="status"><span>23:14</span><span class="sig">▮▮▮ ⌁</span></div>
+          <div class="nav ruled">
+            <span class="act">Huỷ</span>
+            <span class="ttl ttl-sm">Ván mới</span>
+            <span class="act" style="opacity:0">Huỷ</span>
+          </div>
+          <div class="body">
+            <div class="lbl">Loại game</div>
+            <div class="chips">
+              <span class="chip on">Tiến lên</span>
+              <span class="chip">Phỏm</span>
+              <span class="chip">Tá lả</span>
+              <span class="chip">Uno</span>
+              <span class="chip">Khác…</span>
+            </div>
+
+            <div class="lbl" style="margin-top:6px">Người chơi · 5</div>
+            <div class="card flush">
+              <div class="lrow"><div class="rowf"><span class="av s" style="background:var(--p1)">N</span><span>Nam</span></div><span class="t13">✕</span></div>
+              <div class="lrow"><div class="rowf"><span class="av s" style="background:var(--p2)">H</span><span>Hà</span></div><span class="t13">✕</span></div>
+              <div class="lrow"><div class="rowf"><span class="av s" style="background:var(--p3)">L</span><span>Linh</span></div><span class="t13">✕</span></div>
+              <div class="lrow"><div class="rowf"><span class="av s" style="background:var(--p4)">T</span><span>Tuấn</span></div><span class="t13">✕</span></div>
+              <div class="lrow"><div class="rowf"><span class="av s" style="background:var(--p5)">M</span><span>Mai</span></div><span class="t13">✕</span></div>
+            </div>
+            <div class="dashed">＋ Thêm người chơi</div>
+
+            <div class="lbl" style="margin-top:6px">Ai thắng</div>
+            <div class="seg"><div class="on">Điểm cao</div><div>Điểm thấp</div></div>
+
+            <div class="lbl" style="margin-top:6px">Kết thúc khi</div>
+            <div class="seg"><div>Đủ vòng</div><div>Đạt điểm</div><div class="on">Tự bấm</div></div>
+          </div>
+          <div class="foot"><div class="btn">Bắt đầu chơi</div></div>
+        </div>
+      </div>
+
+      <div class="notes">
+        <div class="step">Màn 02</div>
+        <h4>Tạo ván mới</h4>
+        <p class="why">Màn này đứng chắn giữa người dùng và việc họ muốn làm. Phải xong dưới 15 giây, kể cả khi cả bàn đang chờ.</p>
+        <ul>
+          <li><b>Người chơi cũ hiện sẵn để chạm chọn</b>, không phải gõ lại tên mỗi ván. Đây là thứ tiết kiệm thời gian nhiều nhất.</li>
+          <li><b>Màu gán tự động theo thứ tự thêm vào.</b> Người dùng có thể chạm vào avatar để đổi màu, nhưng không bắt buộc phải chọn.</li>
+          <li><b>Mọi lựa chọn đều có sẵn giá trị mặc định.</b> Chọn loại game rồi bấm thẳng “Bắt đầu chơi” là chạy được.</li>
+          <li><b>Thêm người giữa ván vẫn được</b>, vào từ menu ⋯ ở bảng điểm. Các vòng trước tính 0 cho người vào sau.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ---- 04 nhập điểm ---- -->
+    <div class="screen">
+      <div>
+        <div class="caption">Ngày · bàn phím số đang mở</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="sig">▮▮▮ ⌁</span></div>
+          <div class="scrim">
+            <div class="nav">
+              <div class="glyph">‹</div>
+              <div class="stk" style="align-items:center"><span class="ttl ttl-sm">Tiến lên</span><span class="sub">vòng 7 · 5 người</span></div>
+              <div class="glyph">⋯</div>
+            </div>
+            <div class="totals">
+              <div></div>
+              <div class="tot"><span class="av s" style="background:var(--p1)">N</span><span class="nm">Nam</span><span class="big">42</span></div>
+              <div class="tot"><span class="av s" style="background:var(--p2)">H</span><span class="nm">Hà</span><span class="big">37</span></div>
+              <div class="tot"><span class="av s" style="background:var(--p3)">L</span><span class="nm">Linh</span><span class="big">31</span></div>
+              <div class="tot"><span class="av s" style="background:var(--p4)">T</span><span class="nm">Tuấn</span><span class="big">28</span></div>
+              <div class="tot"><span class="av s" style="background:var(--p5)">M</span><span class="nm">Mai</span><span class="big">25</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="handle"></div>
+            <div class="between">
+              <span class="act" style="font-size:15px;color:var(--a-ink2)">Huỷ</span>
+              <span style="font-weight:700;font-size:16px">Vòng 8</span>
+              <span class="act" style="font-size:15px;color:var(--a-ink2)">Xoá hết</span>
+            </div>
+
+            <div class="prow" style="border-color:var(--p1);border-width:1.5px">
+              <div class="rowf"><span class="av" style="background:var(--p1)">N</span><span style="font-weight:600">Nam</span></div>
+              <div class="stepper"><span class="sbtn">−</span><span class="sval">8</span><span class="sbtn">＋</span></div>
+            </div>
+            <div class="prow">
+              <div class="rowf"><span class="av" style="background:var(--p2)">H</span><span style="font-weight:600">Hà</span></div>
+              <div class="stepper"><span class="sbtn">−</span><span class="sval">12</span><span class="sbtn">＋</span></div>
+            </div>
+            <div class="prow">
+              <div class="rowf"><span class="av" style="background:var(--p3)">L</span><span style="font-weight:600">Linh</span></div>
+              <div class="stepper"><span class="sbtn">−</span><span class="sval ng">−3</span><span class="sbtn">＋</span></div>
+            </div>
+            <div class="prow">
+              <div class="rowf"><span class="av" style="background:var(--p4)">T</span><span style="font-weight:600">Tuấn</span></div>
+              <div class="stepper"><span class="sbtn">−</span><span class="sval zero">0</span><span class="sbtn">＋</span></div>
+            </div>
+            <div class="prow">
+              <div class="rowf"><span class="av" style="background:var(--p5)">M</span><span style="font-weight:600">Mai</span></div>
+              <div class="stepper"><span class="sbtn">−</span><span class="sval">6</span><span class="sbtn">＋</span></div>
+            </div>
+
+            <div class="btn">Lưu vòng 8</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="night">
+        <div class="caption">Đêm</div>
+        <div class="phone">
+          <div class="status"><span>23:14</span><span class="sig">▮▮▮ ⌁</span></div>
+          <div class="scrim">
+            <div class="nav">
+              <div class="glyph">‹</div>
+              <div class="stk" style="align-items:center"><span class="ttl ttl-sm">Tiến lên</span><span class="sub">vòng 7 · 5 người</span></div>
+              <div class="glyph">⋯</div>
+            </div>
+            <div class="totals">
+              <div></div>
+              <div class="tot"><span class="av s" style="background:var(--p1)">N</span><span class="nm">Nam</span><span class="big">42</span></div>
+              <div class="tot"><span class="av s" style="background:var(--p2)">H</span><span class="nm">Hà</span><span class="big">37</span></div>
+              <div class="tot"><span class="av s" style="background:var(--p3)">L</span><span class="nm">Linh</span><span class="big">31</span></div>
+              <div class="tot"><span class="av s" style="background:var(--p4)">T</span><span class="nm">Tuấn</span><span class="big">28</span></div>
+              <div class="tot"><span class="av s" style="background:var(--p5)">M</span><span class="nm">Mai</span><span class="big">25</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="handle"></div>
+            <div class="between">
+              <span style="font-size:15px;color:var(--a-ink2)">Huỷ</span>
+              <span style="font-weight:700;font-size:16px">Vòng 8</span>
+              <span style="font-size:15px;color:var(--a-ink2)">Xoá hết</span>
+            </div>
+
+            <div class="prow" style="border-color:var(--p1);border-width:1.5px">
+              <div class="rowf"><span class="av" style="background:var(--p1)">N</span><span style="font-weight:600">Nam</span></div>
+              <div class="stepper"><span class="sbtn">−</span><span class="sval">8</span><span class="sbtn">＋</span></div>
+            </div>
+            <div class="prow">
+              <div class="rowf"><span class="av" style="background:var(--p2)">H</span><span style="font-weight:600">Hà</span></div>
+              <div class="stepper"><span class="sbtn">−</span><span class="sval">12</span><span class="sbtn">＋</span></div>
+            </div>
+
+            <div class="keycap">
+              <div>1</div><div>2</div><div>3</div>
+              <div>4</div><div>5</div><div>6</div>
+              <div>7</div><div>8</div><div>9</div>
+              <div style="color:var(--a-danger)">±</div><div>0</div><div>⌫</div>
+            </div>
+
+            <div class="btn">Lưu vòng 8</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes">
+        <div class="step">Màn 04</div>
+        <h4>Nhập điểm vòng</h4>
+        <p class="why">Thao tác lặp nhiều nhất trong cả app — vài chục lần mỗi ván. Bớt được một chạm ở đây đáng giá hơn bất kỳ tính năng mới nào.</p>
+        <ul>
+          <li><b>Bottom sheet đè lên bảng điểm, không mở màn mới.</b> Tổng điểm vẫn thấy mờ phía sau; vuốt xuống là đóng.</li>
+          <li><b>Hai lối nhập song song:</b> nút −/＋ cho điểm nhỏ, chạm thẳng vào con số để mở bàn phím số (ảnh bên phải). Không bắt chọn chế độ.</li>
+          <li><b>Hàng đang nhập viền theo màu người chơi.</b> Bàn phím che mất tên thì vẫn biết đang nhập cho ai.</li>
+          <li><b>Phím ± đảo dấu</b> — nhiều game trừ điểm nên số âm phải nhập nhanh, không đi vòng.</li>
+          <li><b>Nút −/＋ đúng 44×44pt.</b> Đây là màn dễ bấm nhầm nhất, không co nhỏ hơn dù có 8 người.</li>
+          <li><b>Người chưa nhập để 0 mờ</b>, lưu vẫn được. Không chặn người dùng chỉ vì một ô còn trống.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ---- 05 kết quả ---- -->
+    <div class="screen">
+      <div>
+        <div class="caption">Ngày</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="sig">▮▮▮ ⌁</span></div>
+          <div class="nav ruled">
+            <span class="glyph">✕</span>
+            <span class="ttl ttl-sm">Kết quả</span>
+            <span class="glyph">↗</span>
+          </div>
+          <div class="body">
+            <div class="podium">
+              <span class="topbar" style="background:var(--p1)"></span>
+              <span class="av l" style="background:var(--p1)">N</span>
+              <span class="tag">♛ Vô địch</span>
+              <span class="who">Nam</span>
+              <span class="big num">42</span>
+            </div>
+
+            <div class="card flush">
+              <div class="lrow">
+                <div class="rowf"><span class="rank">2</span><span class="av s" style="background:var(--p2)">H</span><span>Hà</span></div>
+                <div class="rowf"><span class="t12 num">−5</span><span class="t17 num">37</span></div>
+              </div>
+              <div class="lrow">
+                <div class="rowf"><span class="rank">3</span><span class="av s" style="background:var(--p3)">L</span><span>Linh</span></div>
+                <div class="rowf"><span class="t12 num">−11</span><span class="t17 num">31</span></div>
+              </div>
+              <div class="lrow">
+                <div class="rowf"><span class="rank">4</span><span class="av s" style="background:var(--p4)">T</span><span>Tuấn</span></div>
+                <div class="rowf"><span class="t12 num">−14</span><span class="t17 num">28</span></div>
+              </div>
+              <div class="lrow">
+                <div class="rowf"><span class="rank">5</span><span class="av s" style="background:var(--p5)">M</span><span>Mai</span></div>
+                <div class="rowf"><span class="t12 num">−17</span><span class="t17 num">25</span></div>
+              </div>
+            </div>
+
+            <div class="stats">
+              <div class="stat"><b>8</b><span>vòng</span></div>
+              <div class="stat"><b>47′</b><span>thời gian</span></div>
+              <div class="stat"><b>12</b><span>vòng cao nhất</span></div>
+            </div>
+          </div>
+          <div class="foot" style="flex-direction:column;gap:9px;align-items:stretch">
+            <div class="btn">Chơi lại nhóm này</div>
+            <div class="btn ghost">Về danh sách</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="night">
+        <div class="caption">Đêm</div>
+        <div class="phone">
+          <div class="status"><span>23:14</span><span class="sig">▮▮▮ ⌁</span></div>
+          <div class="nav ruled">
+            <span class="glyph">✕</span>
+            <span class="ttl ttl-sm">Kết quả</span>
+            <span class="glyph">↗</span>
+          </div>
+          <div class="body">
+            <div class="podium">
+              <span class="topbar" style="background:var(--p1)"></span>
+              <span class="av l" style="background:var(--p1)">N</span>
+              <span class="tag">♛ Vô địch</span>
+              <span class="who">Nam</span>
+              <span class="big num">42</span>
+            </div>
+
+            <div class="card flush">
+              <div class="lrow">
+                <div class="rowf"><span class="rank">2</span><span class="av s" style="background:var(--p2)">H</span><span>Hà</span></div>
+                <div class="rowf"><span class="t12 num">−5</span><span class="t17 num">37</span></div>
+              </div>
+              <div class="lrow">
+                <div class="rowf"><span class="rank">3</span><span class="av s" style="background:var(--p3)">L</span><span>Linh</span></div>
+                <div class="rowf"><span class="t12 num">−11</span><span class="t17 num">31</span></div>
+              </div>
+              <div class="lrow">
+                <div class="rowf"><span class="rank">4</span><span class="av s" style="background:var(--p4)">T</span><span>Tuấn</span></div>
+                <div class="rowf"><span class="t12 num">−14</span><span class="t17 num">28</span></div>
+              </div>
+              <div class="lrow">
+                <div class="rowf"><span class="rank">5</span><span class="av s" style="background:var(--p5)">M</span><span>Mai</span></div>
+                <div class="rowf"><span class="t12 num">−17</span><span class="t17 num">25</span></div>
+              </div>
+            </div>
+
+            <div class="stats">
+              <div class="stat"><b>8</b><span>vòng</span></div>
+              <div class="stat"><b>47′</b><span>thời gian</span></div>
+              <div class="stat"><b>12</b><span>vòng cao nhất</span></div>
+            </div>
+          </div>
+          <div class="foot" style="flex-direction:column;gap:9px;align-items:stretch">
+            <div class="btn">Chơi lại nhóm này</div>
+            <div class="btn ghost">Về danh sách</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes">
+        <div class="step">Màn 05</div>
+        <h4>Kết thúc ván</h4>
+        <p class="why">Khoảnh khắc duy nhất đáng ăn mừng, và cũng là chỗ tự nhiên nhất để mở ván tiếp theo vì bàn vẫn đang ngồi đủ người.</p>
+        <ul>
+          <li><b>Khối vô địch mang màu của người thắng</b> — vạch màu trên đỉnh thẻ. Đây là lần duy nhất màu người chơi được dùng ở kích thước lớn.</li>
+          <li><b>Hạng 2 trở xuống kèm khoảng cách điểm</b> so với người dẫn (−5, −11…). Biết được thua sát nút hay thua đậm.</li>
+          <li><b>“Chơi lại nhóm này” là nút chính</b> — giữ nguyên người chơi, luật và màu, tạo ván mới ngay.</li>
+          <li><b>Nút ↗ xuất bảng điểm thành ảnh</b> để gửi vào nhóm chat. Rẻ để làm, và là cách app tự lan ra ngoài.</li>
+          <li><b>Kết thúc nhầm vẫn mở khoá lại được</b> từ danh sách. Không có thao tác nào trong app là không thể hoàn tác.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BÀN GIAO ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">05 — Bàn giao</div>
+      <h2>Sang React Native</h2>
+      <p>Toàn bộ token ở trên đã xuất sẵn thành <code>theme.ts</code> trong thư mục <code>design/</code>. Không có thư viện UI nào, chỉ <code>StyleSheet</code>.</p>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <h3>Cách dùng</h3>
+<pre><b>import</b> { useColorScheme } <b>from</b> 'react-native';
+<b>import</b> { makeTheme } <b>from</b> './theme';
+
+<b>const</b> scheme = useColorScheme();        <i>// 'light' | 'dark'</i>
+<b>const</b> t = makeTheme(scheme);
+
+<i>// màu người chơi theo thứ tự vào ván</i>
+t.player[0]   <i>// #2F6FA8 (ngày) / #6FA8DA (đêm)</i>
+t.player[i % 8]
+
+<i>// cột bảng điểm co theo số người</i>
+t.scoreFontSize(5)   <i>// 23</i>
+t.scoreFontSize(8)   <i>// 17</i>
+</pre>
+      </div>
+
+      <div>
+        <h3>Ràng buộc kỹ thuật đã chốt</h3>
+        <ul class="rules">
+          <li>Dữ liệu <strong>chỉ lưu trong máy</strong>. Không tài khoản, không backend, không mạng. Dùng <code>expo-sqlite</code> hoặc <code>AsyncStorage</code> tuỳ bạn.</li>
+          <li><strong>Khoá màn hình dọc</strong> — <code>orientation: "portrait"</code> trong <code>app.json</code>. Không dựng bố cục ngang.</li>
+          <li>Không thống kê dài hạn ở v1. Nhưng <strong>cấu trúc dữ liệu vẫn lưu đủ</strong> để sau này thêm mà không phải migrate.</li>
+          <li>Vùng an toàn: dùng <code>useSafeAreaInsets</code>, thanh dưới cộng thêm inset thay vì cố định 32.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TIẾP THEO ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">06</div>
+      <h2>Tiếp theo</h2>
+    </div>
+    <div class="next">
+      <div class="item"><span class="n">01</span><div><strong>Bạn duyệt bản màu này</strong><p>Xem kỹ màn bảng điểm — chê chỗ nào mình sửa chỗ đó. Đặc biệt là 8 màu người chơi, vì đổi sau sẽ động vào nhiều file.</p></div></div>
+      <div class="item"><span class="n">02</span><div><strong>Dựng project Expo</strong><p>Khởi tạo, cài navigation, đưa <code>theme.ts</code> vào, dựng 5 màn hình tĩnh đúng như bản này.</p></div></div>
+      <div class="item"><span class="n">03</span><div><strong>Nối logic</strong><p>Lưu trong máy, tính tổng, hoàn tác, kết thúc ván. Đây là phần ít việc nhất — dữ liệu của app này rất đơn giản.</p></div></div>
+      <div class="item"><span class="n">04</span><div><strong>Icon và tên app</strong><p>Chưa động tới. Làm sau khi app chạy được, vì lúc đó mới biết cần gì.</p></div></div>
+    </div>
+  </section>
+
+</div>

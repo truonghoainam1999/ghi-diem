@@ -1,0 +1,425 @@
+<title>Ghi Điểm Logo</title>
+<style>
+  :root {
+    --ground:  #EAEAE4;
+    --surface: #F7F7F4;
+    --ink:     #14191F;
+    --soft:    #58616B;
+    --mute:    #8A929B;
+    --rule:    #CFD0C9;
+    --rule-2:  #DEDFD8;
+    --accent:  #B5302B;
+
+    --app-bg:    #12161C;
+    --app-paper: #F4F4F0;
+    --app-ink:   #16202E;
+    --app-light: #F0F2F5;
+
+    --f-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --f-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --f-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:  #121517; --surface: #1A1E21; --ink: #E8EAE9;
+      --soft: #A0A8AF; --mute: #757D85; --rule: #2E3337; --rule-2: #23272A; --accent: #DD6A63;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:  #121517; --surface: #1A1E21; --ink: #E8EAE9;
+    --soft: #A0A8AF; --mute: #757D85; --rule: #2E3337; --rule-2: #23272A; --accent: #DD6A63;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-ui);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet { max-width: 1120px; margin: 0 auto; padding: 72px 40px 96px; }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  h1 {
+    font-family: var(--f-display);
+    font-size: clamp(44px, 7vw, 74px);
+    line-height: 0.96;
+    font-weight: 400;
+    margin: 16px 0 0;
+    letter-spacing: -0.02em;
+  }
+
+  .lede { max-width: 62ch; font-size: 17px; color: var(--soft); margin: 18px 0 0; }
+
+  /* ---------- một phương án ---------- */
+  .option {
+    border-top: 1px solid var(--rule);
+    margin-top: 52px;
+    padding-top: 36px;
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+
+  .stage {
+    background: var(--surface);
+    border: 1px solid var(--rule-2);
+    border-radius: 6px;
+    padding: 34px;
+    display: flex;
+    justify-content: center;
+    color: var(--ink);
+  }
+
+  .num {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--mute);
+    text-transform: uppercase;
+  }
+
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: 31px;
+    line-height: 1.12;
+    margin: 8px 0 0;
+    letter-spacing: -0.015em;
+  }
+
+  .desc { margin: 12px 0 0; color: var(--soft); font-size: 15px; max-width: 60ch; }
+
+  .verdict {
+    margin: 16px 0 0;
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 10px 12px;
+    font-size: 14px;
+    max-width: 62ch;
+  }
+
+  .verdict dt {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mute);
+    padding-top: 3px;
+  }
+
+  .verdict dd { margin: 0; color: var(--soft); }
+  .verdict dd b { color: var(--ink); font-weight: 600; }
+
+  .row {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--surface);
+    border: 1px solid var(--rule-2);
+    border-radius: 5px;
+    padding: 9px 13px;
+    color: var(--ink);
+  }
+
+  .chip .cap { font-family: var(--f-mono); font-size: 10px; color: var(--mute); }
+
+  .appicon {
+    width: 76px;
+    height: 76px;
+    border-radius: 17px;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  }
+
+  .icons { display: flex; gap: 12px; align-items: center; }
+
+  /* ---------- phần kết ---------- */
+  .closing { border-top: 2px solid var(--ink); margin-top: 60px; padding-top: 40px; }
+
+  .closing h2 { font-size: 34px; }
+
+  ul.notes { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; gap: 13px; }
+
+  /* Dấu gạch đặt tuyệt đối, không dùng cột lưới: mỗi thẻ inline trong li sẽ
+     thành một ô lưới riêng, nên chữ sau <strong> rơi xuống cột 14px. */
+  ul.notes li {
+    position: relative;
+    padding-left: 26px;
+    font-size: 14.5px;
+    color: var(--soft);
+    line-height: 1.5;
+    max-width: 76ch;
+  }
+
+  ul.notes li::before { content: "—"; position: absolute; left: 0; color: var(--mute); }
+  ul.notes strong { color: var(--ink); font-weight: 600; }
+
+  code {
+    font-family: var(--f-mono);
+    font-size: 0.88em;
+    background: var(--ground);
+    border: 1px solid var(--rule-2);
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+
+  @media (max-width: 860px) {
+    .sheet { padding: 48px 20px 72px; }
+    .option { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  }
+</style>
+
+<!-- Mỗi ký hiệu định nghĩa đúng một lần rồi dùng lại ở mọi cỡ, nên không có
+     chuyện bản to và bản nhỏ lệch nhau khi chỉnh. Màu theo currentColor. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="m1" viewBox="0 0 100 100">
+      <g stroke="currentColor" stroke-width="9" stroke-linecap="round" fill="none">
+        <line x1="12" y1="50" x2="88" y2="50" />
+        <line x1="50" y1="26" x2="50" y2="74" />
+        <line x1="28.8" y1="28.8" x2="71.2" y2="71.2" />
+        <line x1="71.2" y1="28.8" x2="28.8" y2="71.2" />
+      </g>
+      <circle cx="50" cy="14" r="5.5" fill="currentColor" />
+      <circle cx="50" cy="86" r="5.5" fill="currentColor" />
+    </symbol>
+
+    <symbol id="m2" viewBox="0 0 100 100">
+      <g stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none">
+        <line x1="14" y1="50" x2="86" y2="50" />
+        <line x1="42" y1="24" x2="58" y2="24" />
+        <line x1="50" y1="16" x2="50" y2="32" />
+        <line x1="43" y1="69" x2="57" y2="83" />
+        <line x1="57" y1="69" x2="43" y2="83" />
+      </g>
+    </symbol>
+
+    <symbol id="m3" viewBox="0 0 100 100">
+      <g stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none">
+        <line x1="18" y1="28" x2="38" y2="28" />
+        <line x1="28" y1="18" x2="28" y2="38" />
+        <line x1="62" y1="28" x2="82" y2="28" />
+        <line x1="21" y1="65" x2="35" y2="79" />
+        <line x1="35" y1="65" x2="21" y2="79" />
+        <line x1="62" y1="72" x2="82" y2="72" />
+      </g>
+      <circle cx="72" cy="62" r="3.4" fill="currentColor" />
+      <circle cx="72" cy="82" r="3.4" fill="currentColor" />
+    </symbol>
+
+    <symbol id="m4" viewBox="0 0 100 100">
+      <g stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none">
+        <line x1="41" y1="22" x2="59" y2="22" />
+        <line x1="50" y1="13" x2="50" y2="31" />
+        <line x1="69" y1="50" x2="87" y2="50" />
+        <line x1="43" y1="71" x2="57" y2="85" />
+        <line x1="57" y1="71" x2="43" y2="85" />
+        <line x1="13" y1="50" x2="31" y2="50" />
+      </g>
+      <circle cx="78" cy="40" r="3.4" fill="currentColor" />
+      <circle cx="78" cy="60" r="3.4" fill="currentColor" />
+    </symbol>
+
+    <symbol id="m5" viewBox="0 0 100 100">
+      <g stroke="currentColor" stroke-width="13" stroke-linecap="round" fill="none">
+        <line x1="14" y1="50" x2="86" y2="50" />
+        <line x1="50" y1="14" x2="50" y2="86" />
+      </g>
+      <g stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.5">
+        <line x1="27" y1="27" x2="73" y2="73" />
+        <line x1="73" y1="27" x2="27" y2="73" />
+      </g>
+      <circle cx="24" cy="76" r="4.5" fill="currentColor" />
+      <circle cx="76" cy="24" r="4.5" fill="currentColor" />
+    </symbol>
+
+    <symbol id="m6" viewBox="0 0 100 100">
+      <g stroke="currentColor" stroke-width="9" stroke-linecap="round" fill="none">
+        <line x1="14" y1="50" x2="50" y2="50" />
+        <line x1="50" y1="50" x2="86" y2="14" />
+        <line x1="50" y1="50" x2="86" y2="86" />
+        <line x1="32" y1="32" x2="32" y2="68" />
+      </g>
+      <circle cx="68" cy="50" r="5" fill="currentColor" />
+    </symbol>
+  </defs>
+</svg>
+
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Logo · 6 phương án</div>
+    <h1>Cộng, trừ, nhân, chia</h1>
+    <p class="lede">Sáu cách ghép bốn dấu thành một hình. Mỗi phương án đều kèm bản 20pt và 32pt — đó là cỡ logo sống thật trên thanh tab và trong danh sách, và cũng là chỗ phần lớn ý tưởng đẹp bị chết.</p>
+  </header>
+
+  <!-- ============ 1 ============ -->
+  <section class="option">
+    <div class="stage"><svg width="200" height="200"><use href="#m1" /></svg></div>
+    <div>
+      <div class="num">Phương án 01</div>
+      <h2>Dấu hoà</h2>
+      <p class="desc">Cả bốn dấu chồng lên nhau quanh một nét ngang chung. Nét ngang là dấu trừ; thêm nét dọc thành dấu cộng; hai nét chéo là dấu nhân; nét ngang với hai chấm là dấu chia. Nhìn ra dấu nào là tuỳ mắt dừng ở đâu.</p>
+      <dl class="verdict">
+        <dt>Được</dt><dd><b>Thật sự hoà quyện</b> — không dấu nào đứng riêng, tất cả dùng chung một nét.</dd>
+        <dt>Mất</dt><dd>Phải nhìn kỹ mới tách ra được bốn dấu; liếc nhanh chỉ thấy một ngôi sao tám cánh.</dd>
+      </dl>
+      <div class="row">
+        <span class="chip"><svg width="20" height="20"><use href="#m1" /></svg><span class="cap">20</span></span>
+        <span class="chip"><svg width="32" height="32"><use href="#m1" /></svg><span class="cap">32</span></span>
+        <span class="icons">
+          <span class="appicon" style="background:var(--app-bg);color:var(--app-light)"><svg width="48" height="48"><use href="#m1" /></svg></span>
+          <span class="appicon" style="background:var(--app-paper);color:var(--app-ink)"><svg width="48" height="48"><use href="#m1" /></svg></span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="option">
+    <div class="stage"><svg width="200" height="200"><use href="#m2" /></svg></div>
+    <div>
+      <div class="num">Phương án 02</div>
+      <h2>Chia làm khung</h2>
+      <p class="desc">Lấy dấu chia làm bộ xương: một nét ngang dài với hai chấm trên dưới. Nhưng hai chấm được thay bằng dấu cộng ở trên và dấu nhân ở dưới. Từ xa đọc ra dấu chia, lại gần mới thấy ba dấu kia.</p>
+      <dl class="verdict">
+        <dt>Được</dt><dd><b>Có hai tầng đọc</b> — xa một nghĩa, gần một nghĩa. Cân đối và rất dễ nhớ.</dd>
+        <dt>Mất</dt><dd>Dấu trừ và dấu chia dùng chung nét ngang nên hơi khó tách bạch.</dd>
+      </dl>
+      <div class="row">
+        <span class="chip"><svg width="20" height="20"><use href="#m2" /></svg><span class="cap">20</span></span>
+        <span class="chip"><svg width="32" height="32"><use href="#m2" /></svg><span class="cap">32</span></span>
+        <span class="icons">
+          <span class="appicon" style="background:var(--app-bg);color:var(--app-light)"><svg width="48" height="48"><use href="#m2" /></svg></span>
+          <span class="appicon" style="background:var(--app-paper);color:var(--app-ink)"><svg width="48" height="48"><use href="#m2" /></svg></span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="option">
+    <div class="stage"><svg width="200" height="200"><use href="#m3" /></svg></div>
+    <div>
+      <div class="num">Phương án 03</div>
+      <h2>Bốn ô</h2>
+      <p class="desc">Bốn dấu xếp thành ô vuông hai hàng hai cột, đúng thứ tự cộng trừ nhân chia. Không giấu gì, không cần giải thích.</p>
+      <dl class="verdict">
+        <dt>Được</dt><dd><b>Đọc ra ngay cả bốn dấu</b>, ai nhìn cũng hiểu app này về tính toán.</dd>
+        <dt>Mất</dt><dd>Chúng chỉ đứng cạnh nhau chứ không dính vào nhau — không đúng ý "hoà quyện".</dd>
+      </dl>
+      <div class="row">
+        <span class="chip"><svg width="20" height="20"><use href="#m3" /></svg><span class="cap">20</span></span>
+        <span class="chip"><svg width="32" height="32"><use href="#m3" /></svg><span class="cap">32</span></span>
+        <span class="icons">
+          <span class="appicon" style="background:var(--app-bg);color:var(--app-light)"><svg width="48" height="48"><use href="#m3" /></svg></span>
+          <span class="appicon" style="background:var(--app-paper);color:var(--app-ink)"><svg width="48" height="48"><use href="#m3" /></svg></span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="option">
+    <div class="stage"><svg width="200" height="200"><use href="#m4" /></svg></div>
+    <div>
+      <div class="num">Phương án 04</div>
+      <h2>Vòng xoay</h2>
+      <p class="desc">Bốn dấu đặt ở bốn hướng quanh một tâm rỗng, như bốn người ngồi quanh bàn. Khoảng trống ở giữa chính là cái bàn.</p>
+      <dl class="verdict">
+        <dt>Được</dt><dd><b>Ăn đúng nghĩa của app</b> — bốn người quanh một bàn, không phải bốn phép tính.</dd>
+        <dt>Mất</dt><dd>Thu xuống 20pt là thành một đám chấm rời, không còn hình gì.</dd>
+      </dl>
+      <div class="row">
+        <span class="chip"><svg width="20" height="20"><use href="#m4" /></svg><span class="cap">20</span></span>
+        <span class="chip"><svg width="32" height="32"><use href="#m4" /></svg><span class="cap">32</span></span>
+        <span class="icons">
+          <span class="appicon" style="background:var(--app-bg);color:var(--app-light)"><svg width="48" height="48"><use href="#m4" /></svg></span>
+          <span class="appicon" style="background:var(--app-paper);color:var(--app-ink)"><svg width="48" height="48"><use href="#m4" /></svg></span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="option">
+    <div class="stage"><svg width="200" height="200"><use href="#m5" /></svg></div>
+    <div>
+      <div class="num">Phương án 05</div>
+      <h2>Cộng lồng nhân</h2>
+      <p class="desc">Cùng ý chồng nét như phương án 01, nhưng phân tầng bằng độ dày: dấu cộng đậm nằm trên, dấu nhân mảnh và mờ nằm dưới, hai chấm chia đẩy ra hai góc chéo.</p>
+      <dl class="verdict">
+        <dt>Được</dt><dd><b>Có tầng trước tầng sau</b>, dấu cộng đọc ra ngay mà vẫn thấy đủ bốn.</dd>
+        <dt>Mất</dt><dd>Hai chấm lệch khỏi trục dọc nên khó đọc thành dấu chia; nét mảnh dễ mất khi in.</dd>
+      </dl>
+      <div class="row">
+        <span class="chip"><svg width="20" height="20"><use href="#m5" /></svg><span class="cap">20</span></span>
+        <span class="chip"><svg width="32" height="32"><use href="#m5" /></svg><span class="cap">32</span></span>
+        <span class="icons">
+          <span class="appicon" style="background:var(--app-bg);color:var(--app-light)"><svg width="48" height="48"><use href="#m5" /></svg></span>
+          <span class="appicon" style="background:var(--app-paper);color:var(--app-ink)"><svg width="48" height="48"><use href="#m5" /></svg></span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="option">
+    <div class="stage"><svg width="200" height="200"><use href="#m6" /></svg></div>
+    <div>
+      <div class="num">Phương án 06</div>
+      <h2>Một nét</h2>
+      <p class="desc">Bốn dấu rút gọn còn phần đặc trưng nhất rồi nối thành một hình liền: nét ngang là trừ, hai nhánh toả ra là nhân, nét dọc cắt ngang là cộng, chấm cuối là chia.</p>
+      <dl class="verdict">
+        <dt>Được</dt><dd><b>Gọn nhất, sống tốt nhất ở cỡ nhỏ</b>, và trông như một dấu hiệu chứ không như phép tính.</dd>
+        <dt>Mất</dt><dd>Trừu tượng — không nói được bốn dấu thì người ta không tự đoán ra.</dd>
+      </dl>
+      <div class="row">
+        <span class="chip"><svg width="20" height="20"><use href="#m6" /></svg><span class="cap">20</span></span>
+        <span class="chip"><svg width="32" height="32"><use href="#m6" /></svg><span class="cap">32</span></span>
+        <span class="icons">
+          <span class="appicon" style="background:var(--app-bg);color:var(--app-light)"><svg width="48" height="48"><use href="#m6" /></svg></span>
+          <span class="appicon" style="background:var(--app-paper);color:var(--app-ink)"><svg width="48" height="48"><use href="#m6" /></svg></span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ kết ============ -->
+  <section class="closing">
+    <h2>Mình chọn 02, rồi tới 01</h2>
+    <ul class="notes">
+      <li><strong>Phương án 02 có hai tầng đọc</strong> — từ xa là một dấu chia to, lại gần mới lộ ra cộng và nhân. Logo nào cũng bị nhìn lướt, nên tầng xa phải là một hình đơn giản, và chỉ 02 làm được điều đó mà vẫn chứa đủ bốn dấu.</li>
+      <li><strong>Phương án 01 hoà quyện kỹ nhất</strong> nhưng liếc nhanh chỉ thấy ngôi sao tám cánh — bốn dấu phải tìm mới thấy. Đẹp lúc đứng yên nhìn, yếu lúc lướt qua.</li>
+      <li><strong>Cả sáu đều dùng mực và giấy</strong>, không dùng màu người chơi. Trong app này màu chỉ thuộc về người chơi — logo mà chiếm một màu là tự phá luật mình đặt ra.</li>
+      <li><strong>Không vẽ khung bo góc.</strong> iOS tự bo icon, vẽ thêm là bo hai lần.</li>
+      <li>Chọn xong mình xuất <code>icon.png</code> 1024px và bộ icon Android, thay thẳng vào <code>assets/</code>.</li>
+    </ul>
+  </section>
+
+</div>

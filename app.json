@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Ghi Điểm",
+    "slug": "tinh-diem",
+    "version": "0.1.0",
+    "scheme": "tinhdiem",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#12161C"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.tinhdiem.app"
+    },
+    "android": {
+      "package": "com.tinhdiem.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#F4F4F0",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

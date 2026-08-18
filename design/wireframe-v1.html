@@ -1,0 +1,972 @@
+<title>Ghi Điểm Wireframes</title>
+<style>
+  /* ---------- tokens: light (bare :root = complete palette) ---------- */
+  :root {
+    --ground:   #E7E9E5;
+    --surface:  #FBFBF9;
+    --sunken:   #DDE0DB;
+    --ink:      #171C19;
+    --ink-soft: #5C645E;
+    --ink-mute: #8B938D;
+    --rule:     #C6CBC4;
+    --rule-soft:#D8DCD5;
+    --accent:   #8C2F39;
+    --accent-soft: #B9737A;
+
+    /* greyscale ramp used strictly inside the wireframes */
+    --w-bg:    #FFFFFF;
+    --w-chrome:#F1F2F0;
+    --w-fill:  #E3E5E2;
+    --w-fill2: #CDD1CC;
+    --w-line:  #B9BEB8;
+    --w-ink:   #232824;
+    --w-ink2:  #737974;
+
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:   #131715;
+      --surface:  #1C201E;
+      --sunken:   #0E1210;
+      --ink:      #E7EAE6;
+      --ink-soft: #A3ABA5;
+      --ink-mute: #78807A;
+      --rule:     #333A36;
+      --rule-soft:#262C29;
+      --accent:   #CC6870;
+      --accent-soft: #7E4046;
+
+      --w-bg:    #202523;
+      --w-chrome:#282E2B;
+      --w-fill:  #333A37;
+      --w-fill2: #454D49;
+      --w-line:  #545C57;
+      --w-ink:   #E4E7E4;
+      --w-ink2:  #969D98;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:   #131715;
+    --surface:  #1C201E;
+    --sunken:   #0E1210;
+    --ink:      #E7EAE6;
+    --ink-soft: #A3ABA5;
+    --ink-mute: #78807A;
+    --rule:     #333A36;
+    --rule-soft:#262C29;
+    --accent:   #CC6870;
+    --accent-soft: #7E4046;
+
+    --w-bg:    #202523;
+    --w-chrome:#282E2B;
+    --w-fill:  #333A37;
+    --w-fill2: #454D49;
+    --w-line:  #545C57;
+    --w-ink:   #E4E7E4;
+    --w-ink2:  #969D98;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 72px 40px 96px;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead { display: flex; flex-direction: column; gap: 18px; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(44px, 7vw, 76px);
+    line-height: 0.98;
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .lede {
+    max-width: 62ch;
+    font-size: 17px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    margin-top: 6px;
+  }
+
+  .spec {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 4px 9px;
+  }
+
+  /* ---------- legend ---------- */
+  .legend {
+    margin-top: 44px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    align-items: center;
+  }
+
+  .legend-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  .swatch {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+  }
+
+  .swatch i {
+    width: 15px; height: 15px;
+    border-radius: 3px;
+    border: 1px solid var(--w-line);
+    display: block;
+  }
+
+  /* ---------- screen rows ---------- */
+  .screen {
+    display: grid;
+    grid-template-columns: 390px minmax(0, 1fr);
+    gap: 56px;
+    padding: 56px 0;
+    border-top: 1px solid var(--rule);
+    align-items: start;
+  }
+
+  .screen:first-of-type { margin-top: 56px; }
+
+  .screen-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 26px; }
+
+  .step {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+
+  .screen h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .purpose { margin: 0; color: var(--ink-soft); font-size: 15.5px; max-width: 58ch; }
+
+  .notes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+
+  .notes li {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 16px;
+    align-items: baseline;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .notes li:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 3px 0;
+    text-align: center;
+    align-self: start;
+    position: relative;
+    top: 2px;
+  }
+
+  .tag.ask { color: var(--accent); border-color: var(--accent-soft); }
+
+  .notes strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 844px;
+    border-radius: 42px;
+    border: 1px solid var(--rule);
+    background: var(--w-bg);
+    overflow: hidden;
+    position: sticky;
+    top: 32px;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    color: var(--w-ink);
+  }
+
+  .status {
+    height: 50px;
+    flex: 0 0 50px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 26px 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--w-ink2);
+  }
+
+  .nav {
+    flex: 0 0 auto;
+    padding: 6px 18px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--w-fill);
+  }
+
+  .nav-title { font-size: 20px; font-weight: 650; letter-spacing: -0.01em; }
+  .nav-sub { font-size: 12px; color: var(--w-ink2); font-family: var(--font-mono); }
+  .nav-act { font-size: 13px; color: var(--w-ink2); }
+
+  .icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--w-fill);
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    color: var(--w-ink2);
+    flex: 0 0 auto;
+  }
+
+  .body {
+    flex: 1 1 auto;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow: hidden;
+  }
+
+  .sect {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--w-ink2);
+  }
+
+  .card {
+    border: 1px solid var(--w-line);
+    border-radius: 12px;
+    padding: 14px;
+    background: var(--w-chrome);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .between { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .stack { display: flex; flex-direction: column; gap: 3px; }
+  .row-flex { display: flex; align-items: center; gap: 10px; }
+
+  .t-lg { font-size: 17px; font-weight: 650; }
+  .t-sm { font-size: 12px; color: var(--w-ink2); }
+  .t-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  .avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--w-fill2);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--w-bg);
+    flex: 0 0 auto;
+  }
+
+  .avatar.sm { width: 22px; height: 22px; font-size: 10px; }
+
+  .btn {
+    border-radius: 12px;
+    padding: 15px 16px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 650;
+    background: var(--w-ink);
+    color: var(--w-bg);
+  }
+
+  .btn.ghost {
+    background: transparent;
+    color: var(--w-ink);
+    border: 1px solid var(--w-line);
+  }
+
+  .chip {
+    border: 1px solid var(--w-line);
+    border-radius: 999px;
+    padding: 7px 13px;
+    font-size: 13px;
+    color: var(--w-ink2);
+  }
+
+  .chip.on { background: var(--w-ink); color: var(--w-bg); border-color: var(--w-ink); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .seg {
+    display: flex;
+    border: 1px solid var(--w-line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .seg > div {
+    flex: 1;
+    text-align: center;
+    padding: 10px 6px;
+    font-size: 13px;
+    color: var(--w-ink2);
+  }
+
+  .seg > div.on { background: var(--w-ink); color: var(--w-bg); }
+
+  .field {
+    border: 1px solid var(--w-line);
+    border-radius: 10px;
+    padding: 12px 13px;
+    font-size: 14px;
+    color: var(--w-ink2);
+    background: var(--w-bg);
+  }
+
+  .listrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--w-fill);
+  }
+
+  .listrow:last-child { border-bottom: none; }
+
+  .dashed {
+    border: 1px dashed var(--w-line);
+    border-radius: 10px;
+    padding: 13px;
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--w-ink2);
+  }
+
+  .footbar {
+    flex: 0 0 auto;
+    padding: 12px 18px 30px;
+    border-top: 1px solid var(--w-fill);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: var(--w-chrome);
+  }
+
+  .footbar .btn { flex: 1; }
+
+  /* scoreboard specifics */
+  .totals {
+    display: grid;
+    grid-template-columns: 52px repeat(4, 1fr);
+    border-bottom: 1px solid var(--w-line);
+    background: var(--w-chrome);
+  }
+
+  .tot-gutter { border-right: 1px solid var(--w-fill); }
+
+  .tot {
+    padding: 12px 6px 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    border-right: 1px solid var(--w-fill);
+  }
+
+  .tot:last-child { border-right: none; }
+  .tot.lead { background: var(--w-fill); }
+
+  .tot-name { font-size: 11.5px; color: var(--w-ink2); }
+  .tot-num { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .tot-delta { font-family: var(--font-mono); font-size: 10.5px; color: var(--w-ink2); }
+
+  .grid-head, .grid-row {
+    display: grid;
+    grid-template-columns: 52px repeat(4, 1fr);
+    align-items: center;
+    text-align: center;
+  }
+
+  .grid-head {
+    padding: 9px 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--w-ink2);
+    border-bottom: 1px solid var(--w-fill);
+  }
+
+  .grid-row {
+    padding: 13px 0;
+    border-bottom: 1px solid var(--w-fill);
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .grid-row .rnd {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--w-ink2);
+  }
+
+  .scroll-area { flex: 1 1 auto; overflow: hidden; }
+
+  /* bottom sheet */
+  .scrim {
+    flex: 1 1 auto;
+    background: var(--w-fill);
+    opacity: 0.4;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sheet-panel {
+    flex: 0 0 auto;
+    background: var(--w-bg);
+    border-top: 1px solid var(--w-line);
+    border-radius: 20px 20px 0 0;
+    padding: 10px 18px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: -20px;
+  }
+
+  .handle { width: 40px; height: 4px; border-radius: 2px; background: var(--w-fill2); margin: 0 auto 4px; }
+
+  .stepper { display: flex; align-items: center; gap: 12px; }
+
+  .step-btn {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--w-line);
+    display: grid;
+    place-items: center;
+    font-size: 19px;
+    color: var(--w-ink2);
+  }
+
+  .step-val {
+    min-width: 62px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* podium */
+  .winner {
+    border: 1px solid var(--w-line);
+    border-radius: 16px;
+    padding: 26px 18px;
+    text-align: center;
+    background: var(--w-chrome);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .winner .avatar { width: 54px; height: 54px; font-size: 21px; }
+  .winner-num { font-size: 44px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+  .stat {
+    border: 1px solid var(--w-fill2);
+    border-radius: 10px;
+    padding: 11px 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat b { font-size: 17px; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 10.5px; color: var(--w-ink2); }
+
+  /* ---------- closing ---------- */
+  .close {
+    margin-top: 64px;
+    padding-top: 44px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .close h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 34px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .asks { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 18px; max-width: 72ch; }
+
+  .asks li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 16px; align-items: baseline; }
+
+  .asks .n {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .asks p { margin: 4px 0 0; color: var(--ink-soft); font-size: 14.5px; }
+
+  @media (max-width: 900px) {
+    .sheet { padding: 48px 22px 72px; }
+    .screen { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .phone { position: static; max-width: 100%; }
+    .notes li { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    .tag { justify-self: start; padding: 3px 8px; }
+  }
+</style>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <div class="eyebrow">Wireframe · v1 · chốt bố cục</div>
+    <h1>Ghi Điểm</h1>
+    <p class="lede">Ứng dụng ghi điểm cho các ván bài và boardgame chơi tại bàn. Bản này chỉ dựng khung — chưa màu, chưa font, chưa icon thật. Mục đích duy nhất: chốt xem mỗi màn hình có đúng thứ cần có, và nằm đúng chỗ, trước khi làm đẹp.</p>
+    <div class="specs">
+      <span class="spec">React Native · Expo</span>
+      <span class="spec">StyleSheet thuần</span>
+      <span class="spec">390 × 844 pt</span>
+      <span class="spec">5 màn hình</span>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span class="legend-title">Quy ước</span>
+    <span class="swatch"><i style="background:var(--w-fill)"></i> vùng nền / thanh hệ thống</span>
+    <span class="swatch"><i style="background:var(--w-fill2)"></i> avatar, phần tử đặc</span>
+    <span class="swatch"><i style="background:var(--w-ink)"></i> nút chính, trạng thái đang chọn</span>
+    <span class="swatch"><i style="border-style:dashed;background:transparent"></i> chỗ chưa chốt</span>
+  </div>
+
+  <!-- ============ 1 ============ -->
+  <section class="screen">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+      <div class="nav">
+        <div class="stack">
+          <div class="nav-title">Ghi Điểm</div>
+          <div class="nav-sub">3 ván tuần này</div>
+        </div>
+        <div class="icon">⚙</div>
+      </div>
+      <div class="body">
+        <div class="sect">Đang chơi</div>
+        <div class="card">
+          <div class="between">
+            <div class="stack">
+              <div class="t-lg">Tiến lên</div>
+              <div class="t-sm">4 người · vòng 7 · 22 phút trước</div>
+            </div>
+            <div class="icon">›</div>
+          </div>
+          <div class="row-flex">
+            <div class="avatar sm">N</div>
+            <div class="t-sm">Nam đang dẫn</div>
+            <div class="t-lg t-mono" style="margin-left:auto">42</div>
+          </div>
+        </div>
+
+        <div class="sect" style="margin-top:6px">Đã xong</div>
+        <div class="card" style="gap:0;padding:4px 14px">
+          <div class="listrow">
+            <div class="stack"><div style="font-weight:600">Phỏm</div><div class="t-sm">14/08 · 5 người</div></div>
+            <div class="row-flex"><div class="avatar sm">H</div><div class="t-sm">Hà thắng</div></div>
+          </div>
+          <div class="listrow">
+            <div class="stack"><div style="font-weight:600">Uno</div><div class="t-sm">12/08 · 4 người</div></div>
+            <div class="row-flex"><div class="avatar sm">L</div><div class="t-sm">Linh thắng</div></div>
+          </div>
+          <div class="listrow">
+            <div class="stack"><div style="font-weight:600">Tiến lên</div><div class="t-sm">09/08 · 4 người</div></div>
+            <div class="row-flex"><div class="avatar sm">N</div><div class="t-sm">Nam thắng</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="footbar"><div class="btn">+ Ván mới</div></div>
+    </div>
+
+    <div>
+      <div class="screen-head">
+        <div class="step">Màn 01</div>
+        <h2>Danh sách ván</h2>
+        <p class="purpose">Màn mở app. Việc chính không phải xem lịch sử — mà là <em>quay lại ván đang dở</em> hoặc <em>mở ván mới</em>. Hai việc đó chiếm hai vị trí dễ chạm nhất.</p>
+      </div>
+      <ul class="notes">
+        <li><span class="tag">Ưu tiên</span><span>Ván đang chơi để riêng trên cùng, thẻ to, có tên người đang dẫn. Mở app giữa cuộc chơi là chạm một phát vào đúng ván.</span></li>
+        <li><span class="tag">Ưu tiên</span><span><strong>+ Ván mới</strong> nằm ở thanh dưới cố định, không phải FAB tròn góc phải. Lý do: ngón cái với tới dễ hơn, và nút chữ nói rõ nó làm gì.</span></li>
+        <li><span class="tag">Gọn</span><span>Ván đã xong nén thành dòng một hàng — tên, ngày, người thắng. Không ai cần xem điểm chi tiết từ đây.</span></li>
+        <li><span class="tag">Trạng thái</span><span>Chưa có ván nào: thay cả vùng nội dung bằng một dòng hướng dẫn và nút <strong>Bắt đầu ván đầu tiên</strong>.</span></li>
+        <li><span class="tag ask">Chốt giúp</span><span>Có cần tìm kiếm / lọc theo loại game không? Mình nghiêng về <strong>không</strong> ở v1 — dưới 50 ván thì cuộn nhanh hơn gõ.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="screen">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+      <div class="nav">
+        <div class="nav-act">Huỷ</div>
+        <div class="nav-title" style="font-size:17px">Ván mới</div>
+        <div class="nav-act" style="opacity:.35">Lưu</div>
+      </div>
+      <div class="body">
+        <div class="sect">Loại game</div>
+        <div class="chips">
+          <span class="chip on">Tiến lên</span>
+          <span class="chip">Phỏm</span>
+          <span class="chip">Tá lả</span>
+          <span class="chip">Uno</span>
+          <span class="chip">Khác…</span>
+        </div>
+
+        <div class="sect" style="margin-top:6px">Người chơi · 4</div>
+        <div class="card" style="gap:0;padding:4px 14px">
+          <div class="listrow"><div class="row-flex"><div class="avatar sm">N</div><span>Nam</span></div><span class="t-sm">✕</span></div>
+          <div class="listrow"><div class="row-flex"><div class="avatar sm">H</div><span>Hà</span></div><span class="t-sm">✕</span></div>
+          <div class="listrow"><div class="row-flex"><div class="avatar sm">L</div><span>Linh</span></div><span class="t-sm">✕</span></div>
+          <div class="listrow"><div class="row-flex"><div class="avatar sm">T</div><span>Tuấn</span></div><span class="t-sm">✕</span></div>
+        </div>
+        <div class="dashed">+ Thêm người chơi</div>
+
+        <div class="sect" style="margin-top:6px">Ai thắng</div>
+        <div class="seg">
+          <div class="on">Điểm cao</div>
+          <div>Điểm thấp</div>
+        </div>
+
+        <div class="sect" style="margin-top:6px">Kết thúc khi</div>
+        <div class="seg">
+          <div>Đủ vòng</div>
+          <div>Đạt điểm</div>
+          <div class="on">Tự bấm</div>
+        </div>
+      </div>
+      <div class="footbar"><div class="btn">Bắt đầu chơi</div></div>
+    </div>
+
+    <div>
+      <div class="screen-head">
+        <div class="step">Màn 02</div>
+        <h2>Tạo ván mới</h2>
+        <p class="purpose">Màn hình này đứng giữa người dùng và việc họ thật sự muốn làm. Nó phải xong trong dưới 15 giây, kể cả khi bàn đã bày bài xong và mọi người đang chờ.</p>
+      </div>
+      <ul class="notes">
+        <li><span class="tag">Tốc độ</span><span>Người chơi cũ hiện sẵn để chạm chọn, không phải gõ lại tên mỗi ván. Đây là thứ tiết kiệm thời gian nhiều nhất trên màn này.</span></li>
+        <li><span class="tag">Mặc định</span><span>Mọi lựa chọn đều đã có sẵn giá trị. Chọn loại game rồi bấm thẳng <strong>Bắt đầu chơi</strong> là chạy — không bắt buộc động vào phần luật.</span></li>
+        <li><span class="tag">Luật</span><span>Chỉ hai thứ ảnh hưởng đến cách hiển thị điểm: <strong>cao thắng hay thấp thắng</strong> (đổi chiều xếp hạng) và <strong>khi nào kết thúc</strong>. Các luật riêng của từng game không nhét vào đây.</span></li>
+        <li><span class="tag">Sửa sau</span><span>Thêm người chơi giữa ván vẫn được, vào từ menu ⋯ ở màn bảng điểm. Các vòng trước tính 0 cho người vào sau.</span></li>
+        <li><span class="tag ask">Chốt giúp</span><span>Tối đa bao nhiêu người chơi? Mình dựng theo <strong>2–6</strong>. Trên 6 thì bảng điểm phải đổi hẳn sang bố cục khác, nên cần biết trước.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="screen">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+      <div class="nav">
+        <div class="icon">‹</div>
+        <div class="stack" style="align-items:center">
+          <div class="nav-title" style="font-size:17px">Tiến lên</div>
+          <div class="nav-sub">vòng 7</div>
+        </div>
+        <div class="icon">⋯</div>
+      </div>
+
+      <div class="totals">
+        <div class="tot-gutter"></div>
+        <div class="tot lead">
+          <div class="avatar sm">N</div>
+          <div class="tot-name">Nam ♛</div>
+          <div class="tot-num">42</div>
+          <div class="tot-delta">+8</div>
+        </div>
+        <div class="tot">
+          <div class="avatar sm">H</div>
+          <div class="tot-name">Hà</div>
+          <div class="tot-num">37</div>
+          <div class="tot-delta">+12</div>
+        </div>
+        <div class="tot">
+          <div class="avatar sm">L</div>
+          <div class="tot-name">Linh</div>
+          <div class="tot-num">31</div>
+          <div class="tot-delta">−3</div>
+        </div>
+        <div class="tot">
+          <div class="avatar sm">T</div>
+          <div class="tot-name">Tuấn</div>
+          <div class="tot-num">28</div>
+          <div class="tot-delta">+5</div>
+        </div>
+      </div>
+
+      <div class="scroll-area">
+        <div class="grid-head">
+          <span>Vòng</span><span>Nam</span><span>Hà</span><span>Linh</span><span>Tuấn</span>
+        </div>
+        <div class="grid-row"><span class="rnd">V7</span><span>8</span><span>12</span><span>−3</span><span>5</span></div>
+        <div class="grid-row"><span class="rnd">V6</span><span>5</span><span>4</span><span>9</span><span>2</span></div>
+        <div class="grid-row"><span class="rnd">V5</span><span>11</span><span>0</span><span>6</span><span>7</span></div>
+        <div class="grid-row"><span class="rnd">V4</span><span>3</span><span>8</span><span>4</span><span>6</span></div>
+        <div class="grid-row"><span class="rnd">V3</span><span>7</span><span>5</span><span>2</span><span>3</span></div>
+        <div class="grid-row"><span class="rnd">V2</span><span>4</span><span>6</span><span>9</span><span>1</span></div>
+        <div class="grid-row"><span class="rnd">V1</span><span>4</span><span>2</span><span>4</span><span>4</span></div>
+      </div>
+
+      <div class="footbar">
+        <div class="icon" style="width:48px;height:48px;border-radius:12px">↶</div>
+        <div class="btn">Nhập điểm vòng 8</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="screen-head">
+        <div class="step">Màn 03 · màn hình chính</div>
+        <h2>Bảng điểm</h2>
+        <p class="purpose">Đây là màn người dùng nhìn nhiều nhất, thường là điện thoại đặt giữa bàn, nhìn nghiêng, ánh sáng kém. Mọi thứ khác trong app tồn tại để phục vụ màn này.</p>
+      </div>
+      <ul class="notes">
+        <li><span class="tag">Trọng tâm</span><span>Tổng điểm nằm cố định trên đầu, cỡ chữ lớn nhất app. Liếc một cái là biết ai đang dẫn — không cần đọc, không cần cuộn.</span></li>
+        <li><span class="tag">Lịch sử</span><span>Bên dưới là lưới vòng, mới nhất trên cùng. Cột thẳng hàng bằng chữ số đều bề ngang (<code>tabular-nums</code>) để so sánh theo cột được bằng mắt.</span></li>
+        <li><span class="tag">Hoàn tác</span><span>Nút <strong>↶</strong> luôn hiện cạnh nút nhập điểm. Nhập nhầm là chuyện xảy ra liên tục; bắt người ta vào menu tìm cách sửa là hỏng.</span></li>
+        <li><span class="tag">Sức chứa</span><span>4 người vừa khít màn hình. 5–6 người thì vùng lưới cuộn ngang được, còn hàng tổng điểm co lại giữ nguyên số cột.</span></li>
+        <li><span class="tag">Chạm</span><span>Chạm vào một ô điểm để sửa riêng ô đó. Chạm vào một cột người chơi để xem diễn biến điểm của riêng họ.</span></li>
+        <li><span class="tag ask">Chốt giúp</span><span>Có cần chế độ <strong>xoay ngang</strong> không? Để ngang thì chứa được 6–8 người thoải mái, nhưng phải dựng thêm một bố cục nữa.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="screen">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+      <div class="scrim">
+        <div class="nav">
+          <div class="icon">‹</div>
+          <div class="stack" style="align-items:center">
+            <div class="nav-title" style="font-size:17px">Tiến lên</div>
+            <div class="nav-sub">vòng 7</div>
+          </div>
+          <div class="icon">⋯</div>
+        </div>
+        <div class="totals">
+          <div class="tot-gutter"></div>
+          <div class="tot lead"><div class="avatar sm">N</div><div class="tot-name">Nam ♛</div><div class="tot-num">42</div></div>
+          <div class="tot"><div class="avatar sm">H</div><div class="tot-name">Hà</div><div class="tot-num">37</div></div>
+          <div class="tot"><div class="avatar sm">L</div><div class="tot-name">Linh</div><div class="tot-num">31</div></div>
+          <div class="tot"><div class="avatar sm">T</div><div class="tot-name">Tuấn</div><div class="tot-num">28</div></div>
+        </div>
+      </div>
+      <div class="sheet-panel">
+        <div class="handle"></div>
+        <div class="between">
+          <div class="nav-act">Huỷ</div>
+          <div style="font-weight:650">Vòng 8</div>
+          <div class="nav-act">Xoá hết</div>
+        </div>
+
+        <div class="between">
+          <div class="row-flex"><div class="avatar">N</div><span style="font-weight:600">Nam</span></div>
+          <div class="stepper">
+            <div class="step-btn">−</div><div class="step-val">8</div><div class="step-btn">+</div>
+          </div>
+        </div>
+        <div class="between">
+          <div class="row-flex"><div class="avatar">H</div><span style="font-weight:600">Hà</span></div>
+          <div class="stepper">
+            <div class="step-btn">−</div><div class="step-val">12</div><div class="step-btn">+</div>
+          </div>
+        </div>
+        <div class="between">
+          <div class="row-flex"><div class="avatar">L</div><span style="font-weight:600">Linh</span></div>
+          <div class="stepper">
+            <div class="step-btn">−</div><div class="step-val">−3</div><div class="step-btn">+</div>
+          </div>
+        </div>
+        <div class="between">
+          <div class="row-flex"><div class="avatar">T</div><span style="font-weight:600">Tuấn</span></div>
+          <div class="stepper">
+            <div class="step-btn">−</div><div class="step-val">0</div><div class="step-btn">+</div>
+          </div>
+        </div>
+
+        <div class="dashed" style="margin-top:2px">Bàn phím số hiện khi chạm vào con số</div>
+        <div class="btn">Lưu vòng 8</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="screen-head">
+        <div class="step">Màn 04</div>
+        <h2>Nhập điểm vòng</h2>
+        <p class="purpose">Thao tác lặp lại nhiều nhất trong cả app — mỗi ván vài chục lần. Rút ngắn được một chạm ở đây có giá trị hơn bất kỳ tính năng mới nào.</p>
+      </div>
+      <ul class="notes">
+        <li><span class="tag">Dạng</span><span>Bottom sheet đè lên bảng điểm, không phải màn hình mới. Người dùng vẫn thấy tổng điểm phía sau, và đóng lại bằng cách vuốt xuống.</span></li>
+        <li><span class="tag">Hai lối</span><span>Nút <strong>−/+</strong> cho điểm nhỏ (thường gặp nhất), chạm thẳng vào con số để mở bàn phím số khi cần nhập điểm lớn. Không bắt chọn trước.</span></li>
+        <li><span class="tag">Kích thước</span><span>Ô bấm 44×44 pt — đúng ngưỡng tối thiểu của iOS. Đây là màn dễ bấm nhầm nhất nên không co nhỏ hơn.</span></li>
+        <li><span class="tag">Âm</span><span>Điểm âm phải nhập được (nhiều game trừ điểm). Bấm <strong>−</strong> qua 0 là xuống số âm, không chặn.</span></li>
+        <li><span class="tag ask">Chốt giúp</span><span>Có game nào bạn hay chơi mà điểm tính theo <strong>thứ hạng</strong> (nhất/nhì/ba/bét) thay vì số không? Nếu có, mình thêm hàng nút hạng ở trên để chạm một phát ra điểm.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="screen">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+      <div class="nav">
+        <div class="icon">✕</div>
+        <div class="nav-title" style="font-size:17px">Kết quả</div>
+        <div class="icon">↗</div>
+      </div>
+      <div class="body">
+        <div class="winner">
+          <div class="avatar">N</div>
+          <div class="t-sm">♛ Vô địch</div>
+          <div class="t-lg">Nam</div>
+          <div class="winner-num">42</div>
+        </div>
+
+        <div class="card" style="gap:0;padding:4px 14px">
+          <div class="listrow">
+            <div class="row-flex"><span class="t-mono t-sm" style="width:16px">2</span><div class="avatar sm">H</div><span>Hà</span></div>
+            <div class="row-flex"><span class="t-mono t-sm">−5</span><span class="t-lg t-mono">37</span></div>
+          </div>
+          <div class="listrow">
+            <div class="row-flex"><span class="t-mono t-sm" style="width:16px">3</span><div class="avatar sm">L</div><span>Linh</span></div>
+            <div class="row-flex"><span class="t-mono t-sm">−11</span><span class="t-lg t-mono">31</span></div>
+          </div>
+          <div class="listrow">
+            <div class="row-flex"><span class="t-mono t-sm" style="width:16px">4</span><div class="avatar sm">T</div><span>Tuấn</span></div>
+            <div class="row-flex"><span class="t-mono t-sm">−14</span><span class="t-lg t-mono">28</span></div>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><b>8</b><span>vòng</span></div>
+          <div class="stat"><b>47′</b><span>thời gian</span></div>
+          <div class="stat"><b>12</b><span>vòng cao nhất</span></div>
+        </div>
+      </div>
+      <div class="footbar" style="flex-direction:column;gap:9px">
+        <div class="btn" style="width:100%">Chơi lại nhóm này</div>
+        <div class="btn ghost" style="width:100%">Về danh sách</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="screen-head">
+        <div class="step">Màn 05</div>
+        <h2>Kết thúc ván</h2>
+        <p class="purpose">Khoảnh khắc duy nhất trong app đáng để ăn mừng. Cũng là chỗ tự nhiên nhất để bắt đầu ván tiếp theo — vì bàn vẫn đang ngồi đủ người.</p>
+      </div>
+      <ul class="notes">
+        <li><span class="tag">Thứ bậc</span><span>Người thắng chiếm hẳn một khối riêng phía trên. Từ hạng 2 trở xuống nén lại thành danh sách, kèm khoảng cách điểm so với người dẫn.</span></li>
+        <li><span class="tag">Vòng lặp</span><span><strong>Chơi lại nhóm này</strong> là nút chính — giữ nguyên người chơi và luật, tạo ván mới ngay. Đây là hành vi thực tế của một buổi chơi bài.</span></li>
+        <li><span class="tag">Chia sẻ</span><span>Nút ↗ xuất bảng điểm thành ảnh để gửi vào nhóm chat. Rẻ để làm, và là cách app tự lan ra ngoài.</span></li>
+        <li><span class="tag">Không mất</span><span>Ván đã kết thúc vẫn mở xem lại được từ danh sách, và mở khoá sửa được nếu bấm nhầm kết thúc.</span></li>
+        <li><span class="tag ask">Chốt giúp</span><span>Có muốn theo dõi thành tích dài hạn không — kiểu "Nam thắng 12/30 ván"? Đây là tính năng riêng, khá tốn công, nên mình để ngoài v1 trừ khi bạn muốn.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ closing ============ -->
+  <section class="close">
+    <h2>Năm câu cần bạn chốt</h2>
+    <ol class="asks">
+      <li><span class="n">01</span><div><strong>Tối đa mấy người chơi một ván?</strong><p>Đang dựng theo 2–6. Nếu bạn cần 8 người thì bảng điểm phải đổi bố cục, quyết sớm đỡ làm lại.</p></div></li>
+      <li><span class="n">02</span><div><strong>Có cần xoay ngang màn hình không?</strong><p>Xoay ngang chứa được nhiều người hơn nhưng phải dựng thêm một bố cục thứ hai cho màn bảng điểm.</p></div></li>
+      <li><span class="n">03</span><div><strong>Điểm nhập theo số, hay theo thứ hạng?</strong><p>Nếu game bạn hay chơi tính theo nhất/nhì/ba/bét, mình thêm hàng nút hạng vào màn nhập điểm.</p></div></li>
+      <li><span class="n">04</span><div><strong>Dữ liệu để trong máy hay đồng bộ lên mây?</strong><p>Để trong máy thì làm nhanh, không cần tài khoản. Đồng bộ thì đổi máy vẫn còn lịch sử, nhưng kéo theo đăng nhập và backend.</p></div></li>
+      <li><span class="n">05</span><div><strong>Thống kê dài hạn — có hay không ở v1?</strong><p>Bảng xếp hạng theo mùa, tỉ lệ thắng, đối đầu. Vui nhưng là một mảng riêng, dễ làm chậm bản đầu tiên.</p></div></li>
+    </ol>
+  </section>
+
+</div>
