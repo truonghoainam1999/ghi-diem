@@ -71,11 +71,11 @@ app/ → components/game/ → components/ui/ → theme/
 
 Bảng màu người chơi và ba bậc chữ đều đo bằng công cụ, không chọn bằng cảm giác:
 
-- **8 màu người chơi**: thứ tự được dò để hai màu cạnh nhau cách xa nhất dưới mắt mù màu. ΔE 11.7 (ngày) / 9.4 (đêm), ngưỡng 8.
+- **16 màu người chơi**: thứ tự được dò để hai màu cạnh nhau trên vòng gán cách xa nhau nhất dưới mắt mù màu. Tám màu đầu là bảng gốc, giữ nguyên vì màu đã lưu trong ván cũ là chỉ số vào mảng này.
 - **Ba bậc chữ**, đo trên nền khó đọc nhất: ngày 13.7 / 7.0 / 4.7 — đêm 13.1 / 9.6 / 7.0. Bản đêm cao hơn vì chữ sáng trên nền tối trông mảnh hơn ở cùng tỉ số.
 - **Đường kẻ**: `line` ~2.2:1 cho viền thẻ, `line2` ~3:1 cho viền ô nhập và chip.
 
-Đổi màu nào thì chạy lại trình kiểm tra trước khi ship. Lý do từng con số ghi trong `src/theme/tokens.ts`.
+Đổi màu nào thì chạy `node design/check-player-colors.mjs` trước khi ship — thêm màu mà sàn tụt xuống thấp hơn mức đang có nghĩa là vừa làm hai người chơi nào đó khó phân biệt hơn trước. Lý do từng con số ghi trong `src/theme/tokens.ts`.
 
 ## Thiết kế và logo
 
@@ -86,6 +86,7 @@ design/logo.html           6 phương án logo, đã chọn phương án 02
 design/logo/mark.svg       Logo gốc dạng vector
 design/shots.mjs           Xuất PNG cho mockup
 design/make-icons.mjs      Xuất bộ icon vào assets/
+design/check-player-colors.mjs  Kiểm bảng màu người chơi
 ```
 
 Sửa logo thì sửa `design/make-icons.mjs` rồi chạy `node design/make-icons.mjs` — cả sáu file icon sinh lại từ một nguồn.

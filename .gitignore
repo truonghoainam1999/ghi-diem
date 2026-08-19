@@ -44,3 +44,6 @@ yarn-error.*
 design/node_modules/
 design/png/
 design/png-mockup/
+
+# cấu hình máy riêng của Claude Code — skill trong .claude/skills/ thì commit
+.claude/settings.local.json
