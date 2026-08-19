@@ -1,8 +1,11 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useState, type ReactNode } from 'react';
+import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { GamesProvider } from '@/storage/GamesProvider';
+import { AppSplash } from '@/components/ui/AppSplash';
+import { GamesProvider, useGames } from '@/storage/GamesProvider';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 
 /**
@@ -16,6 +19,22 @@ function AppStatusBar() {
 }
 
 /**
+ * Giữ màn chờ cho tới khi hoạt ảnh chạy xong *và* đọc xong dữ liệu từ máy.
+ * Nằm trong GamesProvider vì phải biết dữ liệu đã sẵn sàng hay chưa.
+ */
+function SplashGate({ children }: { children: ReactNode }) {
+  const { ready } = useGames();
+  const [done, setDone] = useState(false);
+
+  return (
+    <View style={{ flex: 1 }}>
+      {children}
+      {done ? null : <AppSplash ready={ready} onDone={() => setDone(true)} />}
+    </View>
+  );
+}
+
+/**
  * Điều hướng dùng expo-router: mỗi file trong app/ là một màn hình.
  * Header mặc định tắt hết vì mỗi màn tự dựng NavBar riêng theo thiết kế.
  */
@@ -25,9 +44,11 @@ export default function RootLayout() {
       <ThemeProvider>
         <GamesProvider>
           <AppStatusBar />
-          <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
-            <Stack.Screen name="new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          </Stack>
+          <SplashGate>
+            <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
+              <Stack.Screen name="new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+            </Stack>
+          </SplashGate>
         </GamesProvider>
       </ThemeProvider>
     </SafeAreaProvider>

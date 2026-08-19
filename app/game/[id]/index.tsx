@@ -28,7 +28,7 @@ export default function ScoreBoardScreen() {
     return (
       <Screen>
         <NavBar title="Không tìm thấy ván" left={<IconButton glyph="‹" label="Quay lại" onPress={() => router.back()} />} />
-        <EmptyState title="Ván này không còn" body="Có thể nó đã bị xoá." actionLabel="Về danh sách" onAction={() => router.replace('/')} />
+        <EmptyState title="Ván này không còn" body="Có thể nó đã bị xoá." actionLabel="Về danh sách" onAction={() => router.dismissTo('/')} />
       </Screen>
     );
   }
@@ -89,7 +89,7 @@ function ScoreBoardView({ game }: { game: Game }) {
             style: 'destructive',
             onPress: () => {
               deleteGame(game.id);
-              router.replace('/');
+              router.dismissTo('/');
             },
           },
         ]),
@@ -144,7 +144,7 @@ function ScoreBoardView({ game }: { game: Game }) {
         toggles={[
           {
             label: 'Hiện tổng điểm',
-            hint: 'Tắt đi thì giấu con số, vẫn giữ mũi tên xu hướng và vạch màu người dẫn.',
+            hint: 'Tắt đi thì giấu con số và cả dấu người đang dẫn, chỉ còn mũi tên xu hướng.',
             value: game.showTotals !== false,
             onChange: (value) => setShowTotals(game.id, value),
           },

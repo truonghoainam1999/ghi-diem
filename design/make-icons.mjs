@@ -43,8 +43,10 @@ const TARGETS = [
   // iOS: nền tối vì giao diện tối là mặc định của app.
   { file: 'icon.png', size: 1024, scale: 0.62, color: INK_LIGHT, bg: INK_DARK },
 
-  // Splash: app.json đã đặt nền #12161C, nên ảnh này để trong suốt.
-  { file: 'splash-icon.png', size: 1024, scale: 0.34, color: INK_LIGHT, bg: null },
+  // Splash gốc để trống hoàn toàn — chỉ còn nền màu do app.json đặt. Hoạt ảnh
+  // splash trong app mới vẽ ký hiệu; để sẵn logo tĩnh ở đây thì nó hiện ra rồi
+  // biến mất để chạy lại từ đầu, trông như app giật.
+  { file: 'splash-icon.png', size: 1024, scale: 0, color: INK_LIGHT, bg: null },
 
   { file: 'favicon.png', size: 48, scale: 0.68, color: INK_LIGHT, bg: INK_DARK },
 

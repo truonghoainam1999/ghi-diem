@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Pressable, TextInput, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Pressable, ScrollView, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/ui/Button';
 import { Sheet } from '@/components/ui/Sheet';
@@ -9,6 +9,9 @@ import { lastGrapheme } from '@/domain/text';
 import type { PlayerDraft } from '@/domain/types';
 
 import { PlayerAvatar } from './PlayerAvatar';
+
+const SWATCH = 36;
+const SWATCH_GAP = 8;
 
 const useStyles = makeStyles((t) => ({
   head: { alignItems: 'center', paddingVertical: t.space.xs },
@@ -23,21 +26,41 @@ const useStyles = makeStyles((t) => ({
     fontSize: 15,
     color: t.color.ink,
   },
-  /** Tám ô vừa đúng một hàng trên màn hẹp nhất: 8×36 + 7×8 = 344 < 354pt. */
-  swatches: { flexDirection: 'row', gap: t.space.sm, justifyContent: 'space-between' },
-  swatch: { width: 36, height: 36, borderRadius: 18 },
+  /** Hàng màu tràn ra sát hai mép sheet, để thấy ngay là còn màu ở ngoài rìa. */
+  swatchScroll: { marginHorizontal: -t.GUTTER },
+  swatches: { flexDirection: 'row', gap: SWATCH_GAP, paddingHorizontal: t.GUTTER },
+  swatch: { width: SWATCH, height: SWATCH, borderRadius: SWATCH / 2 },
   swatchRing: { borderWidth: 3, borderColor: t.color.ink },
   emojiRow: { flexDirection: 'row', alignItems: 'center', gap: t.space.sm + 2 },
-  emojiInput: {
+  /**
+   * Icon hiện ra bằng <Text> chứ không phải bằng chữ của chính ô nhập: lúc ô
+   * được focus, iOS vẽ chữ theo line-height của font hệ thống, mà emoji lại
+   * dùng font khác nên glyph bị đẩy lệch lên. Ô nhập nằm trong suốt phía trên
+   * chỉ để gọi bàn phím, còn chỗ đứng của icon thì mình tự căn.
+   */
+  emojiBox: {
     flex: 1,
     height: t.HIT + 6,
     borderWidth: 1,
     borderColor: t.color.line2,
     borderRadius: t.radius.button,
     backgroundColor: t.color.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  /** Đang gõ: viền đậm lên thay cho con trỏ nháy đã ẩn. */
+  emojiBoxFocused: { borderColor: t.color.ink },
+  emojiGlyph: { fontSize: 26, lineHeight: 34 },
+  emojiField: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     textAlign: 'center',
     fontSize: 26,
-    color: t.color.ink,
+    color: 'transparent',
   },
   clear: {
     height: t.HIT + 6,
@@ -74,20 +97,24 @@ export function PlayerAppearanceSheet({
   const [name, setName] = useState('');
   const [colorIndex, setColorIndex] = useState(0);
   const [emoji, setEmoji] = useState('');
+  const [focused, setFocused] = useState(false);
 
-  // Đọc draft qua ref chứ không đưa vào deps: nơi gọi thường dựng object mới
-  // mỗi lần render, để trong deps thì effect chạy lại liên tục và xoá mất chữ
-  // người dùng đang gõ. Chỉ nạp lại đúng lúc sheet mở ra.
-  const draftRef = useRef(draft);
-  draftRef.current = draft;
+  // Nạp draft ngay trong lượt render lúc sheet mở ra, không đợi effect: hàng màu
+  // cuộn tới màu đang chọn ngay ở lần đo đầu tiên, mà effect thì chạy sau khi đo
+  // xong nên sẽ cuộn nhầm về màu 0. Chỉ nạp đúng lúc mở, để không xoá mất chữ
+  // người dùng đang gõ ở những lượt render sau.
+  const [wasVisible, setWasVisible] = useState(false);
+  if (visible !== wasVisible) {
+    setWasVisible(visible);
+    if (visible && draft) {
+      setName(draft.name);
+      setColorIndex(draft.colorIndex);
+      setEmoji(draft.emoji ?? '');
+    }
+  }
 
-  useEffect(() => {
-    const current = draftRef.current;
-    if (!visible || !current) return;
-    setName(current.name);
-    setColorIndex(current.colorIndex);
-    setEmoji(current.emoji ?? '');
-  }, [visible]);
+  const swatchList = useRef<ScrollView>(null);
+  const scrolledToColor = useRef(false);
 
   if (!draft) return null;
 
@@ -122,7 +149,20 @@ export function PlayerAppearanceSheet({
         <Text variant="label" tone="ink3">
           Màu
         </Text>
-        <View style={styles.swatches}>
+        <ScrollView
+          ref={swatchList}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.swatchScroll}
+          contentContainerStyle={styles.swatches}
+          // Màu đang chọn có thể nằm ngoài rìa: kéo nó vào tầm mắt ngay khi mở,
+          // chừa lại hai ô phía trước để thấy rõ nó nằm giữa một hàng dài.
+          onContentSizeChange={() => {
+            if (scrolledToColor.current) return;
+            scrolledToColor.current = true;
+            swatchList.current?.scrollTo({ x: Math.max(0, (colorIndex - 2) * (SWATCH + SWATCH_GAP)), animated: false });
+          }}
+        >
           {theme.playerColors.map((color, index) => (
             <Pressable
               key={color}
@@ -133,7 +173,7 @@ export function PlayerAppearanceSheet({
               style={[styles.swatch, { backgroundColor: color }, index === colorIndex && styles.swatchRing]}
             />
           ))}
-        </View>
+        </ScrollView>
       </View>
 
       <View style={styles.block}>
@@ -141,14 +181,21 @@ export function PlayerAppearanceSheet({
           Icon
         </Text>
         <View style={styles.emojiRow}>
-          <TextInput
-            value={emoji}
-            // Chỉ giữ đúng một icon: ký tự vừa gõ thay cho ký tự cũ.
-            onChangeText={(text) => setEmoji(lastGrapheme(text))}
-            placeholder="🙂"
-            placeholderTextColor={theme.color.ink3}
-            style={styles.emojiInput}
-          />
+          <View style={[styles.emojiBox, focused && styles.emojiBoxFocused]}>
+            <Text tone={emoji ? 'ink' : 'ink3'} style={styles.emojiGlyph}>
+              {emoji || '🙂'}
+            </Text>
+            <TextInput
+              value={emoji}
+              // Chỉ giữ đúng một icon: ký tự vừa gõ thay cho ký tự cũ.
+              onChangeText={(text) => setEmoji(lastGrapheme(text))}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              caretHidden
+              accessibilityLabel="Icon"
+              style={styles.emojiField}
+            />
+          </View>
           <Pressable
             accessibilityRole="button"
             onPress={() => setEmoji('')}

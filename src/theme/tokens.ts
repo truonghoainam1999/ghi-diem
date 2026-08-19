@@ -96,7 +96,7 @@ const medalColors: Record<SchemeName, MedalColors> = {
 };
 
 /**
- * Tám màu người chơi, gán theo thứ tự vào ván: playerColors[index % 8].
+ * Mười sáu màu người chơi, gán theo thứ tự vào ván: playerColors[index % 16].
  * Chỉ dùng cho avatar, viền, gạch chân, đường biểu đồ — không tô nền lớn.
  *
  * Thứ tự này không phải xếp cho đẹp: nó được dò để hai màu cạnh nhau (tức hai
@@ -104,13 +104,22 @@ const medalColors: Record<SchemeName, MedalColors> = {
  * nguyên sắc độ và giữ nguyên tương quan sáng-tối, chỉ dời cả dải lên cho hợp
  * nền tối — san bằng độ sáng sẽ làm đỏ và cam dính vào nhau.
  *
- * Cả hai bản đạt đủ 5 kiểm tra: dải sáng, sàn sắc độ, tách bạch với mù màu
- * (ΔE 11.7 sáng / 9.4 tối, ngưỡng 8), sàn mắt thường, và tương phản nền.
- * Đổi màu nào thì chạy lại validator trước khi ship.
+ * Tám màu đầu là bảng cũ, giữ nguyên cả giá trị lẫn thứ tự vì màu đã lưu trong
+ * ván cũ là chỉ số vào mảng này. Tám màu sau được dò thêm với ràng buộc: không
+ * kéo sàn mù màu xuống thấp hơn bảng cũ, nằm trong đúng dải sáng và sàn sắc độ
+ * cũ, tương phản nền ≥ 3.2, và xếp sao cho vòng gán màu vẫn giữ nguyên sàn.
+ *
+ * Đổi màu nào thì chạy lại `node design/check-player-colors.mjs` trước khi ship.
  */
 const playerColors: Record<SchemeName, readonly string[]> = {
-  light: ['#2F6FA8', '#1E8449', '#7D3FA8', '#7A6A12', '#0A90A0', '#B5302B', '#C07408', '#C0327A'],
-  dark: ['#1E80CF', '#229854', '#944BC7', '#8D7B1B', '#269FAF', '#D23A34', '#CE8123', '#D4448A'],
+  light: [
+    '#2F6FA8', '#1E8449', '#7D3FA8', '#7A6A12', '#0A90A0', '#B5302B', '#C07408', '#C0327A',
+    '#8377EA', '#6D9100', '#BD5CC5', '#D85F31', '#9C4900', '#4B55C2', '#E54661', '#4A6A00',
+  ],
+  dark: [
+    '#1E80CF', '#229854', '#944BC7', '#8D7B1B', '#269FAF', '#D23A34', '#CE8123', '#D4448A',
+    '#9083FF', '#79A006', '#D36ADB', '#EF6C3A', '#B25709', '#5B64DA', '#FE536F', '#587B09',
+  ],
 };
 
 export const PLAYER_COLOR_COUNT = playerColors.light.length;

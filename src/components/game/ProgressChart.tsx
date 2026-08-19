@@ -10,18 +10,27 @@ import type { Game } from '@/domain/types';
 import { initialOf } from './PlayerAvatar';
 
 const HEIGHT = 190;
-const PAD_LEFT = 30;
+const PAD_LEFT = 36;
 const PAD_RIGHT = 24;
 const PAD_TOP = 12;
 const PAD_BOTTOM = 20;
 
-/** Bước chia lưới làm tròn đẹp: 1, 2, 5 rồi nhân lên theo bậc 10. */
-function niceStep(span: number, target = 4): number {
-  const raw = Math.max(span, 1) / target;
-  const magnitude = 10 ** Math.floor(Math.log10(raw));
-  const normalized = raw / magnitude;
-  const step = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
-  return step * magnitude;
+/** Vạch chia thò ra ngoài trục dọc, nối mỗi con số vào đúng mốc của nó. */
+const TICK = 3;
+
+/**
+ * Bước chia lưới làm tròn đẹp: 1, 2, 5 rồi nhân lên theo bậc 10.
+ *
+ * Trong các bậc đó, lấy bậc cho ra số mốc gần `target` nhất. Làm tròn một chiều
+ * thì khoảng điểm hơi lẻ sẽ bị đẩy hẳn lên bậc trên — bàn chơi biên độ nhỏ ra
+ * bước 5 cho khoảng rộng 9, và trục dọc không còn mốc nào ngoài số 0.
+ */
+function niceStep(span: number, target = 5): number {
+  const magnitude = 10 ** Math.floor(Math.log10(Math.max(span, 1) / target));
+  const candidates = [1, 2, 5, 10].map((n) => n * magnitude);
+  return candidates.reduce((best, step) =>
+    Math.abs(span / step - target) < Math.abs(span / best - target) ? step : best,
+  );
 }
 
 const useStyles = makeStyles((t) => ({
@@ -84,6 +93,10 @@ export function ProgressChart({ game }: { game: Game }) {
     if (Math.abs(v) > 1e-9) gridValues.push(v);
   }
 
+  // Mốc ghi trên trục dọc. Có cả 0 — vạch của nó kẻ riêng và đậm hơn, nhưng
+  // đứng trên thang đo thì nó vẫn là một mốc như mọi mốc khác.
+  const scaleValues = [0, ...gridValues].sort((a, b) => a - b);
+
   // Vạch dọc mỗi vòng khi ván còn ngắn; ván dài thì chỉ vạch ở chỗ có nhãn,
   // không thì lưới dày đặc át cả đường điểm.
   const labelEvery = Math.max(1, Math.ceil(lastRound / 4));
@@ -132,19 +145,15 @@ export function ProgressChart({ game }: { game: Game }) {
       <Svg width={width} height={HEIGHT}>
         {/* Lưới vẽ mờ và vẽ trước, để nó nằm dưới đường điểm chứ không cạnh tranh. */}
         {gridValues.map((value) => (
-          <Fragment key={`h${value}`}>
-            <Line
-              x1={PAD_LEFT}
-              y1={y(value)}
-              x2={width - PAD_RIGHT}
-              y2={y(value)}
-              stroke={theme.color.line}
-              strokeWidth={1}
-            />
-            <SvgText x={PAD_LEFT - 6} y={y(value) + 3.5} fontSize={10} fill={theme.color.ink3} textAnchor="end">
-              {formatScore(value)}
-            </SvgText>
-          </Fragment>
+          <Line
+            key={`h${value}`}
+            x1={PAD_LEFT}
+            y1={y(value)}
+            x2={width - PAD_RIGHT}
+            y2={y(value)}
+            stroke={theme.color.line}
+            strokeWidth={1}
+          />
         ))}
 
         {gridRounds.map((round) => (
@@ -161,21 +170,72 @@ export function ProgressChart({ game }: { game: Game }) {
 
         {/* Mốc 0 đậm hơn lưới: đây là vạch xuất phát chung của cả bàn. */}
         <Line x1={PAD_LEFT} y1={zeroY} x2={width - PAD_RIGHT} y2={zeroY} stroke={theme.color.line2} strokeWidth={1.5} />
-        <SvgText x={PAD_LEFT - 6} y={zeroY + 3.5} fontSize={10} fill={theme.color.ink3} textAnchor="end">
-          0
-        </SvgText>
+
+        {/*
+          Hai trục gom các mốc thành thang đo. Thiếu chúng thì số điểm bên trái
+          và số vòng bên dưới trôi tự do giữa nền, phải dò theo vạch lưới mới
+          biết chúng đo cái gì. Vẽ sau lưới nên chúng cắt gọn đầu mỗi vạch.
+        */}
+        <Line
+          x1={PAD_LEFT}
+          y1={PAD_TOP}
+          x2={PAD_LEFT}
+          y2={HEIGHT - PAD_BOTTOM}
+          stroke={theme.color.line2}
+          strokeWidth={1}
+        />
+        <Line
+          x1={PAD_LEFT}
+          y1={HEIGHT - PAD_BOTTOM}
+          x2={width - PAD_RIGHT}
+          y2={HEIGHT - PAD_BOTTOM}
+          stroke={theme.color.line2}
+          strokeWidth={1}
+        />
+
+        {scaleValues.map((value) => (
+          <Fragment key={`s${value}`}>
+            <Line
+              x1={PAD_LEFT - TICK}
+              y1={y(value)}
+              x2={PAD_LEFT}
+              y2={y(value)}
+              stroke={theme.color.line2}
+              strokeWidth={1}
+            />
+            <SvgText
+              x={PAD_LEFT - TICK - 4}
+              y={y(value) + 3.5}
+              fontSize={10}
+              // Mốc 0 đậm hơn cho khớp với vạch xuất phát kẻ đậm bên phải nó.
+              fill={value === 0 ? theme.color.ink2 : theme.color.ink3}
+              textAnchor="end"
+            >
+              {formatScore(value)}
+            </SvgText>
+          </Fragment>
+        ))}
 
         {labelRounds.map((round) => (
-          <SvgText
-            key={`x${round}`}
-            x={x(round)}
-            y={HEIGHT - 4}
-            fontSize={10}
-            fill={theme.color.ink3}
-            textAnchor={round === lastRound ? 'end' : 'middle'}
-          >
-            {`v${round}`}
-          </SvgText>
+          <Fragment key={`x${round}`}>
+            <Line
+              x1={x(round)}
+              y1={HEIGHT - PAD_BOTTOM}
+              x2={x(round)}
+              y2={HEIGHT - PAD_BOTTOM + TICK}
+              stroke={theme.color.line2}
+              strokeWidth={1}
+            />
+            <SvgText
+              x={x(round)}
+              y={HEIGHT - 4}
+              fontSize={10}
+              fill={theme.color.ink3}
+              textAnchor={round === lastRound ? 'end' : 'middle'}
+            >
+              {`v${round}`}
+            </SvgText>
+          </Fragment>
         ))}
 
         {series.map((line) => (

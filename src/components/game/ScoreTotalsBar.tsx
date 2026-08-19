@@ -39,8 +39,11 @@ const useStyles = makeStyles((t) => ({
 
 /**
  * Tổng điểm ghim trên đầu bảng — chữ to nhất app. Liếc một cái là biết ai dẫn.
- * Người dẫn đầu đánh dấu hai lớp: vương miện và gạch màu ở đáy ô,
- * để không phụ thuộc riêng vào màu.
+ * Người dẫn đầu đánh dấu hai lớp: tên đậm lên và gạch màu ở đáy ô, để không
+ * phụ thuộc riêng vào màu.
+ *
+ * Giấu tổng điểm thì giấu luôn cả hai dấu đó: giữ lại thì vẫn chỉ thẳng ra ai
+ * đang cao điểm nhất, đúng thứ người dùng vừa bảo đừng cho thấy.
  */
 export function ScoreTotalsBar({
   game,
@@ -52,7 +55,7 @@ export function ScoreTotalsBar({
   game: Game;
   columnWidth: number;
   leaderId: PlayerId | null;
-  /** Tắt thì giấu con số, nhưng vẫn giữ mũi tên xu hướng và vạch màu người dẫn. */
+  /** Tắt thì giấu con số lẫn dấu người dẫn đầu; mũi tên xu hướng vẫn giữ. */
   showTotals: boolean;
   onPressPlayer?: (playerId: PlayerId) => void;
 }) {
@@ -72,7 +75,7 @@ export function ScoreTotalsBar({
           fontSize={fontSize}
           total={byId.get(player.id)?.total ?? 0}
           showTotal={showTotals}
-          isLeader={player.id === leaderId}
+          isLeader={showTotals && player.id === leaderId}
           onPress={onPressPlayer ? () => onPressPlayer(player.id) : undefined}
         />
       ))}
